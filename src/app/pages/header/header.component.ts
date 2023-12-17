@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {AppComponent, IAppUser} from "../../app.component";
 
 @Component({
   selector: 'app-header',
@@ -8,5 +9,9 @@ import { Component } from '@angular/core';
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
-
+  get user(): IAppUser {
+    console.log(1)
+    return this.appComponent.appUser;
+  }
+  constructor(private readonly appComponent: AppComponent) {}
 }
