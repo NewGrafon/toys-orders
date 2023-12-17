@@ -1,1 +1,10 @@
-<p>auth works!</p>
+<form [formGroup]="authForm" (submit)="onSubmit()">
+  <label for="id">
+    Идентификатор
+  </label>
+  <input id="id" [class]="idIsValid ? null : 'invalid'" type="text" formControlName="id">
+  <label for="password">
+    Пароль
+  </label>
+  <input id="password" [class]="passwordIsValid ? null : 'invalid'" type="password" formControlName="password">
+</form>
