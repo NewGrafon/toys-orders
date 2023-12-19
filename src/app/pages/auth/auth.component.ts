@@ -1,17 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TelegramService } from '../../services/telegram/telegram.service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../../services/api/api.service';
 import { IApiAuth } from '../../static/interfaces/auth.interface';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-auth',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, JsonPipe],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.scss',
 })
-export class AuthComponent {
+export class AuthComponent implements OnInit {
+
+  private static instance: AuthComponent;
+  get Instance() {
+    return AuthComponent.instance;
+  }
 
   authForm = new FormGroup({
     id: new FormControl('', [Validators.required, Validators.pattern(/^\d+$/), Validators.min(0)]),
@@ -49,22 +55,34 @@ export class AuthComponent {
     }
   }
 
+  onSubmitting: boolean = false;
   async onSubmit() {
-    this.telegram.MainButton.showProgress(false);
+    const _this = AuthComponent.instance;
 
+    if (_this.onSubmitting) {
+      return;
+    }
+    _this.onSubmitting = true;
+
+    _this.telegram.MainButton.showProgress(false);
     const body: IApiAuth = {
-      id: this.authForm.controls.id.value as string,
-      password: this.authForm.controls.password.value as string,
+      id: _this.authForm.controls.id.value as string,
+      password: _this.authForm.controls.password.value as string,
     };
+    const result = await _this.api.auth(body);
 
-    const result = await this.api.auth(body);
+    _this.telegram.MainButton.hideProgress();
 
-    this.telegram.MainButton.hideProgress();
+    _this.onSubmitting = false;
   }
 
   constructor(
     private readonly telegram: TelegramService,
     private readonly api: ApiService,
   ) {
+  }
+
+  ngOnInit() {
+    AuthComponent.instance = this;
   }
 }
