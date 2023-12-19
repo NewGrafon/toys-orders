@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './current-order.component.html',
-  styleUrl: './current-order.component.scss'
+  styleUrl: './current-order.component.scss',
 })
 export class CurrentOrderComponent {
 

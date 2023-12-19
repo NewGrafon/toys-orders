@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import {IAppUser} from "../../app.component";
+import { IAppUser } from '../../app.component';
 
 export const enum OrderType {
-  Current = "Активные заказы",
-  Created = "Созданные вами заказы",
-  Other = "Остальное"
+  Current = 'Активные заказы',
+  Created = 'Созданные вами заказы',
+  Other = 'Остальное'
 }
 
 export interface IOrder {
@@ -23,11 +23,10 @@ export interface IOrder {
   standalone: true,
   imports: [],
   templateUrl: './orders-list.component.html',
-  styleUrl: './orders-list.component.scss'
+  styleUrl: './orders-list.component.scss',
 })
 export class OrdersListComponent {
   readonly orders: IOrder[] = [];
-
 
   getById(id: number) {
     return this.orders.find((order) => order.id === id);

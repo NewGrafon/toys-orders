@@ -1,10 +1,13 @@
-<form [formGroup]="authForm" (submit)="onSubmit()">
+<form [formGroup]="authForm">
+  <div class="auth-form">
   <label for="id">
     Идентификатор
   </label>
   <input id="id" [class]="idIsValid ? null : 'invalid'" type="text" formControlName="id">
+  <div class="wrapper-row auth-wrap"></div>
   <label for="password">
     Пароль
   </label>
   <input id="password" [class]="passwordIsValid ? null : 'invalid'" type="password" formControlName="password">
+  </div>
 </form>
