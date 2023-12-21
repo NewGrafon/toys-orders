@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { AppComponent, IAppUser } from '../../app.component';
-import { Router } from '@angular/router';
+import { AppComponent } from '../../app.component';
+import { NavigationEnd, Router, Event } from '@angular/router';
 import { JsonPipe } from '@angular/common';
+import { IAppUser } from '../../static/types/app-user.type';
 
 @Component({
   selector: 'app-header',
@@ -19,15 +20,19 @@ export class HeaderComponent {
   }
 
   get user(): IAppUser {
-    return this.appComponent.appUser;
+    return AppComponent.appUser;
   }
 
   constructor(
     private readonly appComponent: AppComponent,
     private readonly router: Router,
   ) {
-    AppComponent.WaitForUpdateUser((url) => {
-      this._currentUrl = url;
+    router.events.subscribe((event: Event) => {
+      if (event instanceof NavigationEnd) {
+        AppComponent.WaitForUpdateUser((url) => {
+          this._currentUrl = url;
+        });
+      }
     });
   }
 }
