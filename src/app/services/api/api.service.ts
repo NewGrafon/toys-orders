@@ -17,7 +17,7 @@ export class ApiService {
   }
 
   private readonly api = ky.create({
-    prefixUrl: 'https://toys-orders.ru/',
+    prefixUrl: '/api/',
     headers: {
       authorization: this.cookieService.get(COOKIE_TOKEN)
     },
