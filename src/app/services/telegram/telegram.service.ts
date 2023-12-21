@@ -1,15 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { TgButton, TgPopupParams } from '../../static/interfaces/telegram.interfaces';
 
-interface TgButton {
-  show: () => void;
-  hide: () => void;
-  setText: (text: string) => void;
-  onClick: (callback: Function) => void;
-  offClick: (callback: Function) => void;
-  showProgress: (leaveActive: boolean) => void;
-  hideProgress: () => void;
-}
 
 @Injectable({
   providedIn: 'root',
@@ -26,5 +18,9 @@ export class TelegramService {
 
   get MainButton(): TgButton {
     return this.tg.MainButton;
+  }
+
+  showPopup(tgPopupParams: TgPopupParams): void {
+    return this.tg.showPopup(tgPopupParams);
   }
 }
