@@ -1,22 +1,5 @@
 import { Component } from '@angular/core';
-import { IAppUser } from '../../app.component';
-
-export const enum OrderType {
-  Current = 'Активные заказы',
-  Created = 'Созданные вами заказы',
-  Other = 'Остальное'
-}
-
-export interface IOrder {
-  id: number;
-  code: string;
-  color: string;
-  colorCode: string;
-  amount: number;
-  deliverDesk: string;
-  type: OrderType;
-  createdBy: IAppUser;
-}
+import { IOrder } from '../../static/interfaces/order.interface';
 
 @Component({
   selector: 'app-orders-list',
