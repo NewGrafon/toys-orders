@@ -1,13 +1,22 @@
-<form [formGroup]="authForm">
-  <div class="auth-form">
-  <label for="id">
-    Идентификатор
-  </label>
-  <input id="id" [class]="idIsValid ? null : 'invalid'" type="text" formControlName="id">
-  <div class="wrapper-row auth-wrap"></div>
-  <label for="password">
-    Пароль
-  </label>
-  <input id="password" [class]="passwordIsValid ? null : 'invalid'" type="password" formControlName="password">
+@if (user === undefined) {
+  <div class="loader-div">
+    <img src="/assets/img/loading.gif" alt="Загрузка..." height="128" width="128" />
   </div>
-</form>
+} @else if (user?.logged) {
+
+} @else {
+  <form [formGroup]="authForm">
+    <div class="auth-form">
+      <label for="id">
+        Идентификатор
+      </label>
+      <input id="id" [class]="idIsValid ? null : 'invalid'" type="text" formControlName="id">
+      <div class="wrapper-row auth-wrap"></div>
+      <label for="password">
+        Пароль
+      </label>
+      <input id="password" [class]="passwordIsValid ? null : 'invalid'" type="password" formControlName="password">
+    </div>
+  </form>
+}
+
