@@ -2,15 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Event, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './pages/header/header.component';
-import { UserRole } from './static/enums/user.enums';
-
-export type IAppUser = {
-  id: number;
-  firstname: string;
-  lastname: string;
-  role: UserRole;
-  logged: boolean;
-} | undefined;
+import { ApiService } from './services/api/api.service';
+import { IAppUser } from './static/types/app-user.type';
 
 @Component({
   selector: 'app-root',
@@ -20,10 +13,16 @@ export type IAppUser = {
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
-  private _appUser: IAppUser;
+  protected _appUser: IAppUser;
 
-  public get appUser(): IAppUser {
-    return this._appUser;
+  protected static instance: AppComponent;
+
+  public static get Instance() {
+    return this.instance;
+  }
+
+  public static get appUser(): IAppUser {
+    return this.instance._appUser;
   }
 
   private static routeChangeCount: number = 0;
@@ -43,7 +42,12 @@ export class AppComponent implements OnInit {
 
   public static navigationEventFinished: boolean = false;
 
-  constructor(private router: Router) {
+  constructor(
+    private readonly router: Router,
+    private readonly api: ApiService,
+  ) {
+
+    AppComponent.instance = this;
 
     router.events.subscribe(async (event: Event) => {
 
@@ -51,25 +55,26 @@ export class AppComponent implements OnInit {
 
         AppComponent.navigationEventFinished = false;
 
-        // consts response = await fetch('/api/get_account_info');
-        // consts user = await response.json();
-        // if (response.ok && user.error !== undefined) {
-        //   UpdateUser({
-        //     firstname: null,
-        //     lastname: null,
-        //     email: null,
-        //     phone: null,
-        //     accountType: 0,
-        //     created: null,
-        //   }, false);
-        // } else {
-        //   UpdateUser(user, true);
-        // }
+        let user: IAppUser = await this.api.userInfo();
+        if (user) {
+          user.logged = true;
+        } else {
+          user = {
+            firstname: undefined,
+            id: undefined,
+            lastname: undefined,
+            logged: false,
+            role: undefined
+          };
+        }
 
+        this._appUser = user;
+
+        console.log(AppComponent.cbAfterUpdateUser);
         for (const cb of AppComponent.cbAfterUpdateUser) {
           const urlTree = this.router.parseUrl(event.url);
-          const urlWithoutParams = urlTree.root.children['primary'].segments.map(it => it.path).join('/');
-          cb(urlWithoutParams);
+          const urlWithoutParams = urlTree.root.children['primary']?.segments.map(it => it.path).join('/') || '/';
+          await cb(urlWithoutParams);
         }
         AppComponent.cbAfterUpdateUser = [];
 
@@ -103,6 +108,6 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    //
+
   }
 }
