@@ -1,0 +1,85 @@
+.header {
+  position: fixed;
+  top: -100vh;
+  left: 0;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  z-index: 98;
+  transition: .2s;
+
+  .header-content {
+    position: absolute;
+    z-index: 99;
+    height: auto;
+    width: 100vw;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+
+    h2 {
+      margin-left: var(--main-padding);
+      margin-top: var(--main-padding);
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    padding-bottom: var(--main-padding);
+  }
+
+  .header-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, .0);
+    //backdrop-filter: blur(8px) opacity(0);
+    z-index: 97;
+    transition: .2s ease;
+    visibility: hidden;
+  }
+
+  .header-bg.show {
+    visibility: visible;
+    background-color: rgba(0, 0, 0, .5);
+    //backdrop-filter: blur(8px) opacity(1);
+  }
+}
+
+.header.show {
+  top: 0;
+}
+
+.header-switcher {
+  cursor: pointer;
+  margin-top: calc(var(--main-padding) / 2);
+  margin-right: calc(var(--main-padding) * 2);
+  position: fixed;
+  right: 0;
+  top: 0;
+  transform: rotate(90deg);
+  z-index: 100;
+
+  mask-image: url("/assets/img/triangle.svg");
+  -webkit-mask-image: url("/assets/img/triangle.svg");
+  mask-size: 100%;
+  -webkit-mask-size: 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  background-color: var(--tg-theme-text-color);
+  color: var(--tg-theme-text-color);
+
+  #triangle {
+    fill: var(--tg-theme-text-color);
+  }
+}
+
+.opened {
+  transform: rotate(270deg);
+}
+
+#triangle {
+  fill: var(--tg-theme-text-color);
+}

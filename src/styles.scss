@@ -12,6 +12,7 @@
   box-sizing: border-box;
   transition: .2s;
   user-select: none;
+  font-family: 'Inter', sans-serif;
 }
 
 body {
@@ -24,15 +25,25 @@ body {
 
 div {
   background: var(--tg-theme-secondary-bg-color);
+  border: 1px solid transparent;
+  border-radius: 12px;
 }
 
 a {
   color: var(--tg-theme-link-color);
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
 }
 
 button {
   background: var(--tg-theme-button-color);
   color: var(--tg-theme-button-text-color);
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font-size: 18px;
+  padding: calc(var(--main-padding) / 1);
+  cursor: pointer;
 }
 
 .hint {
@@ -41,7 +52,7 @@ button {
 }
 
 hr {
-  background: var(--tg-theme-hint-color);
+  border: 1px solid var(--tg-theme-bg-color);
   margin-bottom: var(--main-padding);
 }
 
@@ -52,6 +63,26 @@ input[type="text"], input[type="password"], input[type="number"] {
   padding: 6px;
   font-size: 18px;
   color: var(--tg-theme-text-color);
+}
+
+select {
+  background: var(--tg-theme-bg-color);
+  color: var(--tg-theme-text-color);
+  border: 1px solid var(--tg-theme-button-color);
+  border-radius: 12px;
+  font-size: 20px;
+  padding: calc(var(--main-padding) / 2);
+  padding-left: var(--main-padding);
+  padding-right: var(--main-padding);
+
+  option {
+    font-size: 18px;
+    border-radius: 8px;
+  }
+}
+
+.hidden {
+  display: none;
 }
 
 .centered {
@@ -94,12 +125,12 @@ input[type="text"], input[type="password"], input[type="number"] {
 .loader-div {
   background: transparent;
 
-  position: fixed;
+  position: absolute;
   left: 0;
   top: 0;
 
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
 
   display: flex;
   flex-direction: column;
