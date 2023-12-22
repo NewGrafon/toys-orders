@@ -1,4 +1,4 @@
-export const enum OrderType {
+export enum OrderType {
   Current = 'Активные заказы',
   Created = 'Созданные вами заказы',
   Other = 'Остальное'

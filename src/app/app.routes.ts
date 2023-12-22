@@ -3,7 +3,7 @@ import { AuthComponent } from './pages/auth/auth.component';
 import { AdminComponent } from './pages/admin/admin.component';
 import { CreateOrderComponent } from './pages/create-order/create-order.component';
 import { OrdersListComponent } from './pages/orders-list/orders-list.component';
-import { CurrentOrderComponent } from './pages/current-orders/current-order.component';
+import { CurrentOrdersComponent } from './pages/current-orders/current-orders.component';
 import { CreateUserComponent } from './pages/create-user/create-user.component';
 
 export const routes: Routes = [
@@ -32,9 +32,9 @@ export const routes: Routes = [
     component: OrdersListComponent,
     pathMatch: 'full',
   },
-  {
-    path: 'current',
-    component: CurrentOrderComponent,
-    pathMatch: 'full',
-  },
+  // {
+  //   path: 'current',
+  //   component: CurrentOrdersComponent,
+  //   pathMatch: 'full',
+  // },
 ];

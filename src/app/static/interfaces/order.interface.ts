@@ -7,7 +7,21 @@ export interface IOrder {
   color: string;
   colorCode: string;
   amount: number;
-  deliverDesk: string;
+  desktop: string;
   type: OrderType;
-  createdBy: IAppUser;
+  takenBy: IAppUser;
+  creator: IAppUser;
+  isClosed: boolean;
+  createdAt: number | Date;
+  updatedAt: number | Date;
+  deletedAt: number | Date;
+}
+
+export interface IApiCreateOrder {
+  codeName: string;
+  code: string;
+  color: string;
+  colorCode: string;
+  amount: number;
+  desktop: string;
 }
