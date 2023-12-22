@@ -1,1 +1,112 @@
-<p>orders-list works!</p>
+<div class="orders">
+  <h2>Список заказов</h2>
+  <hr>
+  @if (user === undefined) {
+    <div class="loader-div">
+      <img src="/assets/img/loading.gif" alt="Загрузка..." height="128" width="128" />
+    </div>
+  } @else {
+    <div class="update-orders">
+      <p (click)="updateOrders();" >Обновить список заказов</p>
+      <div (click)="updateOrders();" [id]="'refreshIcon'"></div>
+    </div>
+    @if (user.role === UserRole.Deliver) {
+      <div class="orders-list">
+        <div class="title">
+          <h3>{{ OrderType.Current }}</h3>
+          <img (click)="deliverOpened = !deliverOpened;" [ngClass]="['switcher', deliverOpened ? 'opened' : '']"
+               [height]="32" [width]="20">
+        </div>
+        <div [ngClass]="['content', deliverOpened ? 'content-opened' : '']">
+          @if (orders === undefined) {
+            <div class="loader-div">
+              <img src="/assets/img/loading.gif" alt="Загрузка..." height="128" width="128" />
+            </div>
+          } @else {
+            @for (order of CurrentOrders; track order) {
+              <div class="content-item">
+                <p>Заказ №{{ order.id }}</p>
+                <p>Свойства заказа:</p>
+                <div class="order-properties">
+                  <div>
+                    <p>Код: {{ order.code }}</p>
+                    <p>Цвет: {{ order.color }}</p>
+                    <p>Код цвета: {{ order.colorCode }}</p>
+                    <p>Количество: {{ order.amount }}</p>
+                    <p>Стол доставки: {{ order.desktop }}</p>
+                  </div>
+                </div>
+                <button (click)="closeOrder(order.id)">Завершить заказ</button>
+                <p [ngClass]="['hint', 'created-difference']">Создан: {{ timeDifference(order.createdAt) }}</p>
+              </div>
+            }
+          }
+
+        </div>
+      </div>
+      <hr>
+    }
+
+    @if (user.role === UserRole.Worker) {
+      <div class="orders-list">
+        <div class="title">
+          <h3>{{ OrderType.Created }}</h3>
+          <img (click)="workerOpened = !workerOpened;" [ngClass]="['switcher', workerOpened ? 'opened' : '']"
+               [height]="32" [width]="20">
+        </div>
+        <div [ngClass]="['content', workerOpened ? 'content-opened' : '']">
+          @if (orders === undefined) {
+            <div class="loader-div">
+              <img src="/assets/img/loading.gif" alt="Загрузка..." height="128" width="128" />
+            </div>
+          } @else {
+            @for (order of CreatedOrders; track order) {
+              <div class="content-item">
+                <p>Заказ №{{ order.id }}</p>
+                <p>Свойства заказа:</p>
+                <div class="order-properties">
+                  <div>
+                    <p>Код: {{ order.code }}</p>
+                    <p>Цвет: {{ order.color }}</p>
+                    <p>Код цвета: {{ order.colorCode }}</p>
+                    <p>Количество: {{ order.amount }}</p>
+                    <p>Стол доставки: {{ order.desktop }}</p>
+                  </div>
+                </div>
+                <button class="red" (click)="cancelOrder(order.id)">Отменить заказ</button>
+                <p [ngClass]="['hint', 'created-difference']">Создан: {{ timeDifference(order.createdAt) }}</p>
+              </div>
+            }
+          }
+
+        </div>
+      </div>
+      <hr>
+    }
+
+    <div class="orders-list">
+      <div class="title">
+        <h3>{{ OrderType.Other }}</h3>
+        <img (click)="otherOpened = !otherOpened;" [ngClass]="['switcher', otherOpened ? 'opened' : '']" [height]="32"
+             [width]="20">
+      </div>
+      <div [ngClass]="['content', otherOpened ? 'content-opened' : '']">
+        @if (orders === undefined) {
+          <div class="loader-div">
+            <img src="/assets/img/loading.gif" alt="Загрузка..." height="128" width="128" />
+          </div>
+        } @else {
+          @for (order of OtherOrders; track order) {
+            <div class="content-item">
+              <p>Заказ №{{ order.id }}</p>
+              @if (user.role === UserRole.Deliver) {
+                <button (click)="takeOrder(order.id)">Взять заказ</button>
+              }
+              <p [ngClass]="['hint', 'created-difference']">Создан: {{ timeDifference(order.createdAt) }}</p>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  }
+</div>

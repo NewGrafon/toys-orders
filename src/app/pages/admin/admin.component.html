@@ -20,7 +20,7 @@
           <div class="user">
             <p>{{ user?.firstname }} {{ user?.lastname }}</p>
             <div class="wrapper-row"></div>
-            <p [style]="{ width: '100%' }">Роль: {{ user?.role }}</p>
+            <p [style]="{ width: '100%' }">Роль: {{ user?.role }} | Идентификатор: {{ user?.id }}</p>
             <button>Изменить пароль</button>
             <button class="red" (click)="deleteUser(user?.id || -1)">Удалить аккаунт</button>
           </div>
