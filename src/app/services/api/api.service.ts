@@ -6,17 +6,12 @@ import { COOKIE_TOKEN } from '../../static/consts/token.const';
 import { TelegramService } from '../telegram/telegram.service';
 import { IAppUser } from '../../static/types/app-user.type';
 import { IApiCreateUser } from '../../static/interfaces/create-user.interfaces';
+import { IApiCreateOrder, IOrder } from '../../static/interfaces/order.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
-  constructor(
-    private readonly cookieService: CookieService,
-    private readonly tg: TelegramService,
-  ) {
-  }
-
   private readonly api = ky.create({
     prefixUrl: '/api/',
     headers: {
@@ -41,6 +36,12 @@ export class ApiService {
       ],
     },
   });
+
+  constructor(
+    private readonly cookieService: CookieService,
+    private readonly tg: TelegramService,
+  ) {
+  }
 
   public async auth(body: IApiAuth): Promise<IApiAuthResponse> {
     let result: IApiAuthResponse;
@@ -94,7 +95,7 @@ export class ApiService {
   }
 
   public async createUser(body: IApiCreateUser): Promise<boolean> {
-    let result: boolean = false;
+    let result: boolean;
 
     try {
       result = await this.api.post('users/create', {
@@ -113,6 +114,73 @@ export class ApiService {
 
     try {
       result = await this.api.delete(`users/${id}`).json();
+    } catch (e) {
+      console.error(e);
+      result = false;
+    }
+
+    return result;
+  }
+
+  public async getAllOrders(): Promise<IOrder[]> {
+    let result: IOrder[];
+
+    try {
+      result = await this.api.get('orders/get_all').json();
+    } catch (e) {
+      console.error(e);
+      result = [];
+    }
+
+    return result;
+  }
+
+  public async createOrder(body: IApiCreateOrder): Promise<boolean> {
+    let result: boolean;
+
+    try {
+      result = await this.api.post('orders', {
+        json: body,
+      }).json();
+    } catch (e) {
+      console.error(e);
+      result = false;
+    }
+
+    return result;
+  }
+
+  public async takeOrder(id: number): Promise<boolean> {
+    let result: boolean;
+
+    try {
+      result = await this.api.patch(`orders/take/${id}`).json();
+    } catch (e) {
+      console.error(e);
+      result = false;
+    }
+
+    return result;
+  }
+
+  public async closeOrder(id: number, isFinishedNotCancel: boolean): Promise<boolean> {
+    let result: boolean;
+
+    try {
+      result = await this.api.patch(`orders/close/${id}/${isFinishedNotCancel}`).json();
+    } catch (e) {
+      console.error(e);
+      result = false;
+    }
+
+    return result;
+  }
+
+  public async cancelOrder(id: number): Promise<boolean> {
+    let result: boolean;
+
+    try {
+      result = await this.api.delete(`orders/cancel/${id}`).json();
     } catch (e) {
       console.error(e);
       result = false;
