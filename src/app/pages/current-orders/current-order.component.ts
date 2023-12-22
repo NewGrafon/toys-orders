@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-current-order',
+  selector: 'app-current-orders',
   standalone: true,
   imports: [],
   templateUrl: './current-order.component.html',
-  styleUrl: './current-order.component.scss',
+  styleUrl: './current-orders.component.scss',
 })
 export class CurrentOrderComponent {
 
