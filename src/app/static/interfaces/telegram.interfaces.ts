@@ -21,5 +21,5 @@ export interface TgPopupParams {
 export interface TgPopupButton {
   id?: string;
   type?: 'default' | 'ok' | 'close' | 'cancel' | 'destructive';
-  text: string;
+  text?: string;
 }

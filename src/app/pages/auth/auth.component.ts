@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { TelegramService } from '../../services/telegram/telegram.service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../../services/api/api.service';
@@ -8,9 +8,8 @@ import { CookieService } from 'ngx-cookie-service';
 import { COOKIE_TOKEN } from '../../static/consts/token.const';
 import { AppComponent } from '../../app.component';
 import { IAppUser } from '../../static/types/app-user.type';
-import { Location } from '@angular/common';
 import { UserRole } from '../../static/enums/user.enums';
-import { NavigationEnd, Router, Event } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-auth',
@@ -26,6 +25,7 @@ export class AuthComponent {
   }
 
   private static instance: AuthComponent;
+
   get Instance() {
     return AuthComponent.instance;
   }
@@ -67,6 +67,7 @@ export class AuthComponent {
   }
 
   onSubmitting: boolean = false;
+
   async onSubmit() {
     const _this = AuthComponent.instance;
 
@@ -82,18 +83,22 @@ export class AuthComponent {
     };
 
     const result = await _this.api.auth(body);
-
     if (result.session_token) {
       const date = new Date();
       date.setDate(date.getDate() + 1);
       _this.cookieService.set(COOKIE_TOKEN, result.session_token, date);
       _this.telegram.MainButton.hide();
-
-      if (_this.user?.role === UserRole.Admin) {
-        await _this.router.navigateByUrl('/admin');
-      } else {
-        await _this.router.navigateByUrl('/list');
-      }
+      // const user = await AppComponent.updateUser();
+      // if (user?.logged) {
+      //   if (user.role === UserRole.Admin) {
+      //     await _this.router.navigateByUrl('/admin');
+      //   } else {
+      //     await _this.router.navigateByUrl('/list');
+      //   }
+      // } else {
+      //   await _this.router.navigateByUrl('/');
+      // }
+      window.location.reload();
     }
 
     _this.telegram.MainButton.offClick(_this.onSubmit);
@@ -109,21 +114,5 @@ export class AuthComponent {
     private readonly router: Router,
   ) {
     AuthComponent.instance = this;
-
-    router.events.subscribe(async (event: Event) => {
-      if (event instanceof NavigationEnd) {
-        console.log(1);
-        AppComponent.WaitForUpdateUser(async (url) => {
-          console.log(1);
-          if (AppComponent.appUser?.logged) {
-            if (AppComponent.appUser?.role === UserRole.Admin) {
-              await this.router.navigateByUrl('/admin');
-            } else {
-              await this.router.navigateByUrl('/list');
-            }
-          }
-        });
-      }
-    });
   }
 }
