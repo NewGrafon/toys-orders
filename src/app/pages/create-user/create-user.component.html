@@ -1,0 +1,38 @@
+<div class="create-user">
+  <h2>Создание пользователя</h2>
+  <hr>
+  <a routerLink="/admin"><- Назад</a>
+  <form [formGroup]="createUserForm">
+    <div class="create-user-form">
+      <label for="firstname">
+        Имя
+      </label>
+      <input id="firstname"
+             [class]="firstnameValid ? null : 'invalid'"
+             type="text" formControlName="firstname"/>
+      <div class="wrapper-row form-wrap"></div>
+      <label for="lastname">
+        Фамилия
+      </label>
+      <input id="lastname"
+             [class]="lastnameValid ? null : 'invalid'"
+             type="text" formControlName="lastname"/>
+      <div class="wrapper-row form-wrap"></div>
+      <label for="password">
+        Пароль
+      </label>
+      <input id="password"
+             [class]="passwordValid ? null : 'invalid'"
+             type="password" formControlName="password"/>
+      <div class="wrapper-row form-wrap"></div>
+      <label for="role">Роль пользователя</label>
+      <select [class]="roleValid ? null : 'invalid'" formControlName="role" id="role">
+        <option value="">Выберите роль</option>
+        <option value="{{ UserRole.Deliver }}">{{ UserRole.Deliver }}</option>
+        <option value="{{ UserRole.Worker }}">{{ UserRole.Worker }}</option>
+        <option value="{{ UserRole.Admin }}">{{ UserRole.Admin }}</option>
+      </select>
+    </div>
+  </form>
+</div>
+

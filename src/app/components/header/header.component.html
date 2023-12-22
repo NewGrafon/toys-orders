@@ -1,0 +1,36 @@
+@if (user !== undefined && user.logged) {
+  <div [ngClass]="['header', opened ? 'show' : '']">
+    <div [class]="'header-content'">
+      <h2
+        routerLink="/list"
+        (click)="opened = false;">
+          Список всех заказов
+      </h2>
+      <h2
+        routerLink="/create"
+        (click)="opened = false;"
+        [class]="user.role !== UserRole.Worker ? 'hidden' : ''">
+          Создать заказ
+      </h2>
+      <h2
+        routerLink="/current"
+        (click)="opened = false;"
+        [class]="user.role !== UserRole.Deliver ? 'hidden' : ''">
+          Взятые заказы
+      </h2>
+      <h2
+        routerLink="/admin"
+        (click)="opened = false;"
+        [class]="user.role !== UserRole.Admin ? 'hidden' : ''">
+          Админ-панель
+      </h2>
+      <h2
+        (click)="logout();">
+        Выйти из аккаунта
+      </h2>
+    </div>
+    <div [ngClass]="['header-bg', opened ? 'show' : '']"></div>
+  </div>
+  <img (click)="switchMenu();" [ngClass]="['header-switcher', opened ? 'opened' : '']" [height]="40" [width]="25">
+}
+

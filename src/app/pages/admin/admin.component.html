@@ -1,1 +1,38 @@
-<p>admin works!</p>
+<div class="admin">
+  <a routerLink="/create-user">Создать пользователя</a>
+  <hr [style]="{
+      borderColor: 'var(--tg-theme-text-color)',
+      marginTop: 'var(--main-padding);',
+      marginBotton: '',
+   }">
+  <h3>Список пользователей</h3>
+  <hr>
+  <div class="users">
+    @if (users === undefined) {
+      <div class="loader-div">
+        <img src="/assets/img/loading.gif" alt="Загрузка..." height="128" width="128" />
+      </div>
+    } @else if (users.length === 0) {
+      <h3 [class]="'hint'">Нет созданных пользователей.</h3>
+    } @else {
+      @for (user of users; track user) {
+        @if (!user?.deletedAt) {
+          <div class="user">
+            <p>{{ user?.firstname }} {{ user?.lastname }}</p>
+            <div class="wrapper-row"></div>
+            <p [style]="{ width: '100%' }">Роль: {{ user?.role }}</p>
+            <button>Изменить пароль</button>
+            <button class="red" (click)="deleteUser(user?.id || -1)">Удалить аккаунт</button>
+          </div>
+
+        }
+        @if (
+          !$last && !user?.deletedAt &&
+          !(users.length - 2 === $index && users[$index + 1]?.deletedAt)
+          ) {
+          <hr>
+        }
+      }
+    }
+  </div>
+</div>
