@@ -5,6 +5,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { COOKIE_TOKEN } from '../../static/consts/token.const';
 import { TelegramService } from '../telegram/telegram.service';
 import { IAppUser } from '../../static/types/app-user.type';
+import { IApiCreateUser } from '../../static/interfaces/create-user.interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +20,7 @@ export class ApiService {
   private readonly api = ky.create({
     prefixUrl: '/api/',
     headers: {
-      authorization: this.cookieService.get(COOKIE_TOKEN)
+      authorization: this.cookieService.get(COOKIE_TOKEN),
     },
     retry: 0,
     hooks: {
@@ -32,13 +33,13 @@ export class ApiService {
               message: body.message as string,
               buttons: [{
                 type: 'ok',
-                text: 'Ок'
-              }]
-            })
+                text: 'Ок',
+              }],
+            });
           }
-        }
-      ]
-    }
+        },
+      ],
+    },
   });
 
   public async auth(body: IApiAuth): Promise<IApiAuthResponse> {
@@ -74,6 +75,47 @@ export class ApiService {
     } catch (e) {
       console.error(e);
       result = undefined;
+    }
+
+    return result;
+  }
+
+  public async getAllUsers(): Promise<IAppUser[]> {
+    let result: IAppUser[];
+
+    try {
+      result = await this.api.get('users/get_all').json() || [];
+    } catch (e) {
+      console.error(e);
+      result = [];
+    }
+
+    return result;
+  }
+
+  public async createUser(body: IApiCreateUser): Promise<boolean> {
+    let result: boolean = false;
+
+    try {
+      result = await this.api.post('users/create', {
+        json: body,
+      }).json();
+    } catch (e) {
+      console.error(e);
+      result = false;
+    }
+
+    return result;
+  }
+
+  public async deleteUser(id: number): Promise<boolean> {
+    let result: boolean;
+
+    try {
+      result = await this.api.delete(`users/${id}`).json();
+    } catch (e) {
+      console.error(e);
+      result = false;
     }
 
     return result;
