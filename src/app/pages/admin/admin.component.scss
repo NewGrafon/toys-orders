@@ -1,0 +1,54 @@
+.admin {
+  padding: var(--main-padding);
+  margin-top: calc(var(--main-padding) * 3);
+
+  hr {
+    margin-top: calc(var(--main-padding) / 2);
+    margin-bottom: calc(var(--main-padding) / 2);
+  }
+
+  a, h3 {
+    font-size: 24px;
+  }
+
+  .users {
+    position: relative;
+    width: 100%;
+    min-height: 128px;
+    //overflow-y: auto;
+    //overflow-x: hidden;
+
+    h3 {
+      font-size: 16px;
+      margin: calc(var(--main-padding) / 2);
+      text-align: center;
+    }
+
+    .user {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      flex-wrap: wrap;
+
+      p {
+        margin-bottom: 6px;
+        font-size: 20px;
+        text-align: center;
+      }
+
+      button {
+        margin-top: 4px;
+        padding: calc(var(--main-padding) / 2);
+        font-size: 14px;
+        width: 45%;
+        margin-right: 2%;
+        margin-left: 2%;
+      }
+
+      button.red {
+        background: red;
+      }
+    }
+  }
+}
+
