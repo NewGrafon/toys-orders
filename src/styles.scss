@@ -145,6 +145,29 @@ select {
   //}
 }
 
+// switcher
+
+.switcher {
+  cursor: pointer;
+  transform: rotate(90deg);
+  z-index: 100;
+
+  mask-image: url("/assets/img/triangle.svg");
+  -webkit-mask-image: url("/assets/img/triangle.svg");
+  mask-size: 100%;
+  -webkit-mask-size: 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  background-color: var(--tg-theme-text-color);
+  color: var(--tg-theme-text-color);
+}
+
+.opened {
+  transform: rotate(270deg);
+}
+
 // header
 
 app-header {

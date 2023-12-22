@@ -50,36 +50,10 @@
   top: 0;
 }
 
-.header-switcher {
-  cursor: pointer;
+.switcher {
   margin-top: calc(var(--main-padding) / 2);
   margin-right: calc(var(--main-padding) * 2);
   position: fixed;
   right: 0;
   top: 0;
-  transform: rotate(90deg);
-  z-index: 100;
-
-  mask-image: url("/assets/img/triangle.svg");
-  -webkit-mask-image: url("/assets/img/triangle.svg");
-  mask-size: 100%;
-  -webkit-mask-size: 100%;
-  mask-repeat: no-repeat;
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  background-color: var(--tg-theme-text-color);
-  color: var(--tg-theme-text-color);
-
-  #triangle {
-    fill: var(--tg-theme-text-color);
-  }
-}
-
-.opened {
-  transform: rotate(270deg);
-}
-
-#triangle {
-  fill: var(--tg-theme-text-color);
 }

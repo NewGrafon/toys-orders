@@ -4,9 +4,9 @@ import { Component } from '@angular/core';
   selector: 'app-current-orders',
   standalone: true,
   imports: [],
-  templateUrl: './current-order.component.html',
+  templateUrl: './current-orders.component.html',
   styleUrl: './current-orders.component.scss',
 })
-export class CurrentOrderComponent {
+export class CurrentOrdersComponent {
 
 }
