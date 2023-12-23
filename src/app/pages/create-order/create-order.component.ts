@@ -23,7 +23,7 @@ export class CreateOrderComponent {
   private static instance: CreateOrderComponent;
 
   createOrderForm = new FormGroup({
-    codeName: new FormControl('', [Validators.required, Validators.minLength(1)]),
+    partName: new FormControl('', [Validators.required, Validators.minLength(1)]),
     code: new FormControl('', [Validators.required, Validators.minLength(1)]),
     color: new FormControl('', [Validators.required, Validators.minLength(1)]),
     colorCode: new FormControl('', [Validators.required, Validators.minLength(1)]),
@@ -31,8 +31,8 @@ export class CreateOrderComponent {
     desktop: new FormControl('', [Validators.required, Validators.minLength(1)]),
   });
 
-  get codeNameValid(): boolean {
-    const valid = !(this.createOrderForm.controls.codeName.invalid && this.createOrderForm.controls.codeName.touched);
+  get partNameValid(): boolean {
+    const valid = !(this.createOrderForm.controls.partName.invalid && this.createOrderForm.controls.partName.touched);
 
     if (valid) {
       this.formCheck();
@@ -93,7 +93,7 @@ export class CreateOrderComponent {
 
   formCheck(): void {
     if (
-      this.createOrderForm.controls.codeName.valid &&
+      this.createOrderForm.controls.partName.valid &&
       this.createOrderForm.controls.code.valid &&
       this.createOrderForm.controls.color.valid &&
       this.createOrderForm.controls.colorCode.valid &&
@@ -120,7 +120,7 @@ export class CreateOrderComponent {
 
     _this.telegram.MainButton.showProgress(false);
     const body: IApiCreateOrder = {
-      codeName: _this.createOrderForm.controls.codeName.value as string,
+      partName: _this.createOrderForm.controls.partName.value as string,
       code: _this.createOrderForm.controls.code.value as string,
       color: _this.createOrderForm.controls.color.value as string,
       colorCode: _this.createOrderForm.controls.colorCode.value as string,

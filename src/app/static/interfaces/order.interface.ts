@@ -3,6 +3,7 @@ import { OrderType } from '../enums/order.enum';
 
 export interface IOrder {
   id: number;
+  partName: string;
   code: string;
   color: string;
   colorCode: string;
@@ -18,7 +19,7 @@ export interface IOrder {
 }
 
 export interface IApiCreateOrder {
-  codeName: string;
+  partName: string;
   code: string;
   color: string;
   colorCode: string;
