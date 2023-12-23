@@ -5,6 +5,7 @@ import { CreateOrderComponent } from './pages/create-order/create-order.componen
 import { OrdersListComponent } from './pages/orders-list/orders-list.component';
 import { CurrentOrdersComponent } from './pages/current-orders/current-orders.component';
 import { CreateUserComponent } from './pages/create-user/create-user.component';
+import { EditUserComponent } from './pages/edit-user/edit-user.component';
 
 export const routes: Routes = [
   {
@@ -20,6 +21,11 @@ export const routes: Routes = [
   {
     path: 'create-user',
     component: CreateUserComponent,
+    pathMatch: 'full',
+  },
+  {
+    path: 'edit-user/:id',
+    component: EditUserComponent,
     pathMatch: 'full',
   },
   {
