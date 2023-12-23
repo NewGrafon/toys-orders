@@ -5,7 +5,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { COOKIE_TOKEN } from '../../static/consts/token.const';
 import { TelegramService } from '../telegram/telegram.service';
 import { IAppUser } from '../../static/types/app-user.type';
-import { IApiCreateUser } from '../../static/interfaces/create-user.interfaces';
+import { IApiCreateUser, IApiEditUser } from '../../static/interfaces/create-user.interfaces';
 import { IApiCreateOrder, IOrder } from '../../static/interfaces/order.interface';
 
 @Injectable({
@@ -99,6 +99,23 @@ export class ApiService {
 
     try {
       result = await this.api.post('users/create', {
+        json: body,
+      }).json();
+    } catch (e) {
+      console.error(e);
+      result = false;
+    }
+
+    return result;
+  }
+
+  public async editUser(userId: number, body: IApiEditUser): Promise<boolean> {
+    let result: boolean;
+
+    try {
+      console.log(`users/edit/${userId}`);
+      
+      result = await this.api.patch(`users/edit/${userId}`, {
         json: body,
       }).json();
     } catch (e) {
