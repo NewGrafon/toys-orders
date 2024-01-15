@@ -89,6 +89,9 @@
       }
 
       display: none;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
 
       .content-item {
 
@@ -115,9 +118,11 @@
           display: flex;
           flex-direction: row;
           justify-content: center;
+          
 
           div {
 
+            flex-grow: 1;
             display: flex;
             flex-direction: row;
             flex-wrap: wrap;
@@ -130,8 +135,8 @@
 
             p {
               width: 100%;
-              word-break: keep-all;
-              white-space: nowrap;
+              // word-break: keep-all;
+              // white-space: nowrap;
               text-align: left;
               font-size: 16px;
               line-height: 18px;
