@@ -7,6 +7,7 @@ import { TelegramService } from '../telegram/telegram.service';
 import { IAppUser } from '../../static/types/app-user.type';
 import { IApiCreateUser, IApiEditUser } from '../../static/interfaces/create-user.interfaces';
 import { IApiCreateOrder, IOrder } from '../../static/interfaces/order.interface';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -22,15 +23,22 @@ export class ApiService {
       afterResponse: [
         async (_input, _options, res) => {
           const body = await res.json();
-          if (body.statusCode >= 400 && body.statusCode < 500 && !_input.url.includes('users/me')) {
-            this.tg.showPopup({
-              title: 'Ошибка',
-              message: body.message as string,
-              buttons: [{
-                type: 'ok',
-                text: 'Ок',
-              }],
-            });
+          if (body.statusCode >= 400 && body.statusCode < 500) {
+            console.error(_input.url);
+            console.error(body.message);
+
+            if (body.statusCode !== 401 && !_input.url.includes('users/me')) {
+              console.error(_input.url);
+              this.tg.showPopup({
+                title: 'Ошибка',
+                message: body.message as string,
+                buttons: [{
+                  type: 'ok',
+                  text: 'Ок',
+                }],
+              });
+              await this.router.navigateByUrl('/');
+            }
           }
         },
       ],
@@ -40,6 +48,7 @@ export class ApiService {
   constructor(
     private readonly cookieService: CookieService,
     private readonly tg: TelegramService,
+    private readonly router: Router,
   ) {
   }
 
@@ -50,6 +59,8 @@ export class ApiService {
         .post('auth/login', {
           json: body,
         }).json();
+        console.log(result);
+        
       if (result?.session_token === undefined) {
         result.session_token = null;
       }
@@ -58,6 +69,7 @@ export class ApiService {
       console.error(e);
       result = {
         session_token: null,
+        expiresIn: '0',
       };
     }
 
@@ -114,7 +126,7 @@ export class ApiService {
 
     try {
       console.log(`users/edit/${userId}`);
-      
+
       result = await this.api.patch(`users/edit/${userId}`, {
         json: body,
       }).json();
@@ -201,6 +213,19 @@ export class ApiService {
     } catch (e) {
       console.error(e);
       result = false;
+    }
+
+    return result;
+  }
+
+  public async getColorsInfo(): Promise<object> {
+    let result: object;
+
+    try {
+      result = await this.api.get(`orders/colors_info`).json();
+    } catch (e) {
+      console.error(e);
+      result = {};
     }
 
     return result;

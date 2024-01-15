@@ -85,7 +85,32 @@ export class AuthComponent {
     const result = await _this.api.auth(body);
     if (result.session_token) {
       const date = new Date();
-      date.setDate(date.getDate() + 1);
+      const value: number = Number.isNaN(result.expiresIn) 
+                              ? Number.parseInt(result.expiresIn.slice(0, -1)) 
+                              : Number.parseInt(result.expiresIn);
+      switch (true) {
+        case result.expiresIn.includes('y'): {
+          date.setFullYear(date.getFullYear() + value);
+          break;
+        }
+        case result.expiresIn.includes('m'): {
+          date.setMonth(date.getMonth() + value);
+          break;
+        }
+        case result.expiresIn.includes('d'): {
+          date.setDate(date.getDate() + value);
+          break;
+        }
+        case result.expiresIn.includes('h'): {
+          date.setHours(date.getHours() + value);
+          break;
+        }
+        case result.expiresIn.includes('s') || !Number.isNaN(result.expiresIn): {
+          date.setSeconds(date.getSeconds() + value);
+          break;
+        }
+      }
+      
       _this.cookieService.set(COOKIE_TOKEN, result.session_token, date);
       _this.telegram.MainButton.hide();
       // const user = await AppComponent.updateUser();

@@ -5,4 +5,5 @@ export interface IApiAuth {
 
 export interface IApiAuthResponse {
   session_token: string | null;
+  expiresIn: string;
 }
