@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Event, NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { HeaderComponent } from './components/header/header.component';
-import { ApiService } from './services/api/api.service';
-import { IAppUser } from './static/types/app-user.type';
-import { COOKIE_TOKEN } from './static/consts/token.const';
-import { CookieService } from 'ngx-cookie-service';
-import { UserRole } from './static/enums/user.enums';
+import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {Event, NavigationEnd, Router, RouterOutlet} from '@angular/router';
+import {HeaderComponent} from './components/header/header.component';
+import {ApiService} from './services/api/api.service';
+import {IAppUser} from './static/types/app-user.type';
+import {COOKIE_TOKEN} from './static/consts/token.const';
+import {CookieService} from 'ngx-cookie-service';
+import {UserRole} from './static/enums/user.enums';
+import {ColorInfo} from "./static/interfaces/colors-info.interface";
 
 @Component({
   selector: 'app-root',
@@ -22,6 +23,11 @@ export class AppComponent implements OnInit {
   private _currentUrl: string = '';
   public static get currentUrl(): string {
     return AppComponent.Instance._currentUrl;
+  }
+
+  private _colorsInfo: ColorInfo[] = [];
+  public static get colorsInfo(): ColorInfo[] {
+    return AppComponent.Instance._colorsInfo;
   }
 
   protected static instance: AppComponent;
@@ -92,7 +98,8 @@ export class AppComponent implements OnInit {
         const user: IAppUser = await AppComponent.updateUser();
 
         let url: string = window.location.pathname;
-
+        console.log(user);
+        
         if (user !== undefined) {
           if (!user.logged && this.AuthUrls().includes(url)) {
             console.log(`not logged`);
@@ -150,7 +157,19 @@ export class AppComponent implements OnInit {
 
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    const colorsJson = (await this.api.getColorsInfo()) || [];
 
+    const keys = Object.keys(colorsJson);
+    const values = Object.values(colorsJson);
+
+    for (let i = 0; i < keys.length; i++) {
+      AppComponent.Instance._colorsInfo[i] = {
+        code: values[i],
+        color: keys[i],
+      }
+    }
+
+    console.log(AppComponent.Instance._colorsInfo);
   }
 }

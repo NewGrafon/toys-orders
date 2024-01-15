@@ -8,6 +8,7 @@ import { NgClass } from '@angular/common';
 import { OrderType } from '../../static/enums/order.enum';
 import { FormsModule } from '@angular/forms';
 import { TelegramService } from '../../services/telegram/telegram.service';
+import { ColorInfo } from '../../static/interfaces/colors-info.interface';
 
 @Component({
   selector: 'app-orders-list',
@@ -201,6 +202,12 @@ export class OrdersListComponent {
 
     this.orders = undefined;
     this.orders = (await this.api.getAllOrders()).filter((order: IOrder) => order.deletedAt === null && !order.isClosed);
+    this.orders = this.orders.map((color) => {
+      color.color = AppComponent.colorsInfo.filter((_color: ColorInfo) => _color.code === color.colorCode)[0].color;
+      return color;
+    });
+    console.log(this.orders);
+    
     for (let i = 0; i < this.orders.length; i++) {
       this.orders[i].type = OrderType.Other;
       if (this.orders[i].takenBy?.id === this.user?.id) {
