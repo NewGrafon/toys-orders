@@ -1,5 +1,5 @@
 <div class="orders">
-  <h2>Список заказов</h2>
+  <h2>Список заявок</h2>
   <hr>
   @if (user === undefined) {
     <div class="loader-div">
@@ -7,7 +7,7 @@
     </div>
   } @else {
     <div class="update-orders">
-      <p (click)="updateOrders();" >Обновить список заказов</p>
+      <p (click)="updateOrders();" >Обновить список заявок</p>
       <div (click)="updateOrders();" [id]="'refreshIcon'"></div>
     </div>
     @if (user.role === UserRole.Deliver) {
@@ -25,8 +25,8 @@
           } @else {
             @for (order of CurrentOrders; track order) {
               <div class="content-item">
-                <p>Заказ №{{ order.id }}</p>
-                <p>Свойства заказа:</p>
+                <p>Заявка №{{ order.id }}</p>
+                <p>Текст заявки:</p>
                 <div class="order-properties">
                   <div>
                     <p>Название детали: {{ order.partName }}</p>
@@ -35,6 +35,7 @@
                     <p>Код цвета: {{ order.colorCode }}</p>
                     <p>Количество: {{ order.amount }}</p>
                     <p>Стол доставки: {{ order.desktop }}</p>
+                    <!-- <p>{{ order.fullText }}</p> -->
                   </div>
                 </div>
                 <button (click)="closeOrder(order.id)">Завершить заказ</button>
@@ -63,15 +64,17 @@
           } @else {
             @for (order of CreatedOrders; track order) {
               <div class="content-item">
-                <p>Заказ №{{ order.id }}</p>
-                <p>Свойства заказа:</p>
+                <p>Заявка №{{ order.id }}</p>
+                <p>Текст заявки:</p>
                 <div class="order-properties">
                   <div>
+                    <p>Название детали: {{ order.partName }}</p>
                     <p>Код: {{ order.code }}</p>
                     <p>Цвет: {{ order.color }}</p>
                     <p>Код цвета: {{ order.colorCode }}</p>
                     <p>Количество: {{ order.amount }}</p>
                     <p>Стол доставки: {{ order.desktop }}</p>
+                    <!-- <p>{{ order.fullText }}</p> -->
                   </div>
                 </div>
                 <button class="red" (click)="cancelOrder(order.id)">Отменить заказ</button>
@@ -99,7 +102,7 @@
         } @else {
           @for (order of OtherOrders; track order) {
             <div class="content-item">
-              <p>Заказ №{{ order.id }}</p>
+              <p>Заявка №{{ order.id }}</p>
               @if (user.role === UserRole.Deliver) {
                 <button (click)="takeOrder(order.id)">Взять заказ</button>
               }
