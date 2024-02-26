@@ -1,4 +1,4 @@
 export interface ColorInfo {
-    color: string;
-    code: string;
+  color: string;
+  code: string;
 }

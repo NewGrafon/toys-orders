@@ -1,4 +1,4 @@
 export interface IColorSimilarityItem {
-    code: number;
-    similarity: number;
+  code: number;
+  similarity: number;
 }

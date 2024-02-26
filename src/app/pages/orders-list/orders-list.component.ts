@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IOrder } from '../../static/interfaces/order.interface';
+import { IOrder } from '../../static/interfaces/order.interfaces';
 import { IAppUser } from '../../static/types/app-user.type';
 import { AppComponent } from '../../app.component';
 import { ApiService } from '../../services/api/api.service';

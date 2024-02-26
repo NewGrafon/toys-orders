@@ -1,5 +1,11 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TelegramService } from '../../services/telegram/telegram.service';
 import { ApiService } from '../../services/api/api.service';
@@ -10,11 +16,7 @@ import { UserRole } from '../../static/enums/user.enums';
 @Component({
   selector: 'app-create-user',
   standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    RouterLink,
-  ],
+  imports: [FormsModule, ReactiveFormsModule, RouterLink],
   templateUrl: './create-user.component.html',
   styleUrl: './create-user.component.scss',
 })
@@ -22,14 +24,26 @@ export class CreateUserComponent {
   private static instance: CreateUserComponent;
 
   createUserForm = new FormGroup({
-    firstname: new FormControl('', [Validators.required, Validators.minLength(1)]),
-    lastname: new FormControl('', [Validators.required, Validators.minLength(1)]),
-    password: new FormControl('', [Validators.required, Validators.minLength(1)]),
+    firstname: new FormControl('', [
+      Validators.required,
+      Validators.minLength(1),
+    ]),
+    lastname: new FormControl('', [
+      Validators.required,
+      Validators.minLength(1),
+    ]),
+    password: new FormControl('', [
+      Validators.required,
+      Validators.minLength(1),
+    ]),
     role: new FormControl('', [Validators.required]),
   });
 
   get firstnameValid(): boolean {
-    const valid = !(this.createUserForm.controls.firstname.invalid && this.createUserForm.controls.firstname.touched);
+    const valid = !(
+      this.createUserForm.controls.firstname.invalid &&
+      this.createUserForm.controls.firstname.touched
+    );
 
     if (valid) {
       this.formCheck();
@@ -39,7 +53,10 @@ export class CreateUserComponent {
   }
 
   get lastnameValid(): boolean {
-    const valid = !(this.createUserForm.controls.lastname.invalid && this.createUserForm.controls.lastname.touched);
+    const valid = !(
+      this.createUserForm.controls.lastname.invalid &&
+      this.createUserForm.controls.lastname.touched
+    );
 
     if (valid) {
       this.formCheck();
@@ -49,7 +66,10 @@ export class CreateUserComponent {
   }
 
   get passwordValid(): boolean {
-    const valid = !(this.createUserForm.controls.password.invalid && this.createUserForm.controls.password.touched);
+    const valid = !(
+      this.createUserForm.controls.password.invalid &&
+      this.createUserForm.controls.password.touched
+    );
 
     if (valid) {
       this.formCheck();
@@ -59,10 +79,9 @@ export class CreateUserComponent {
   }
 
   get roleValid(): boolean {
-    const valid = (
+    const valid =
       this.createUserForm.controls.role.value !== '' ||
-      this.createUserForm.controls.role.untouched
-    );
+      this.createUserForm.controls.role.untouched;
 
     if (valid) {
       this.formCheck();
@@ -110,10 +129,12 @@ export class CreateUserComponent {
       _this.telegram.showPopup({
         title: 'Успех!',
         message: `Пользователь успешно создан. Сообщите работнику пароль, после закрытия этого окна вы больше не сможете просмотреть его. Пароль: "${body.password}"`,
-        buttons: [{
-          type: 'ok',
-          text: 'Ок',
-        }],
+        buttons: [
+          {
+            type: 'ok',
+            text: 'Ок',
+          },
+        ],
       });
       _this.telegram.MainButton.hide();
       await _this.router.navigateByUrl('/admin');

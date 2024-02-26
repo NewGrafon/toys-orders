@@ -1,13 +1,13 @@
-import {Component, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {Event, NavigationEnd, Router, RouterOutlet} from '@angular/router';
-import {HeaderComponent} from './components/header/header.component';
-import {ApiService} from './services/api/api.service';
-import {IAppUser} from './static/types/app-user.type';
-import {COOKIE_TOKEN} from './static/consts/token.const';
-import {CookieService} from 'ngx-cookie-service';
-import {UserRole} from './static/enums/user.enums';
-import {ColorInfo} from "./static/interfaces/colors-info.interface";
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Event, NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { HeaderComponent } from './components/header/header.component';
+import { ApiService } from './services/api/api.service';
+import { IAppUser } from './static/types/app-user.type';
+import { COOKIE_TOKEN } from './static/consts/token.const';
+import { CookieService } from 'ngx-cookie-service';
+import { UserRole } from './static/enums/user.enums';
+import { ColorInfo } from './static/interfaces/colors-info.interface';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +17,6 @@ import {ColorInfo} from "./static/interfaces/colors-info.interface";
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
-
   protected _appUser: IAppUser;
 
   private _currentUrl: string = '';
@@ -51,7 +50,8 @@ export class AppComponent implements OnInit {
     return AppComponent.routeChangeCount;
   }
 
-  AuthUrls = (): string[] => ['/create', '/list', '/current'].concat(this.AdminAuthUrls);
+  AuthUrls = (): string[] =>
+    ['/create', '/list', '/current'].concat(this.AdminAuthUrls);
   AdminAuthUrls: string[] = ['/admin'];
 
   private static cbAfterUpdateUser: any[] = [];
@@ -86,20 +86,17 @@ export class AppComponent implements OnInit {
     private readonly api: ApiService,
     private readonly cookieService: CookieService,
   ) {
-
     AppComponent.instance = this;
 
     router.events.subscribe(async (event: Event) => {
-
       if (event instanceof NavigationEnd) {
-
         AppComponent.navigationEventFinished = false;
 
         const user: IAppUser = await AppComponent.updateUser();
 
         let url: string = window.location.pathname;
         console.log(user);
-        
+
         if (user !== undefined) {
           if (!user.logged && this.AuthUrls().includes(url)) {
             console.log(`not logged`);
@@ -107,7 +104,10 @@ export class AppComponent implements OnInit {
             await this.router.navigateByUrl('/');
           }
 
-          if (user.role !== UserRole.Admin && this.AdminAuthUrls.includes(url)) {
+          if (
+            user.role !== UserRole.Admin &&
+            this.AdminAuthUrls.includes(url)
+          ) {
             console.log(`not admin in admin-zone`);
             url = '/list';
             await this.router.navigateByUrl('/list');
@@ -152,9 +152,7 @@ export class AppComponent implements OnInit {
 
         AppComponent.navigationEventFinished = true;
       }
-
     });
-
   }
 
   async ngOnInit() {
@@ -167,7 +165,7 @@ export class AppComponent implements OnInit {
       AppComponent.Instance._colorsInfo[i] = {
         code: values[i],
         color: keys[i],
-      }
+      };
     }
 
     console.log(AppComponent.Instance._colorsInfo);

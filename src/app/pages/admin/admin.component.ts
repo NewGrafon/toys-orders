@@ -9,9 +9,7 @@ import { TelegramService } from '../../services/telegram/telegram.service';
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [
-    RouterLink,
-  ],
+  imports: [RouterLink],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.scss',
 })
@@ -25,7 +23,8 @@ export class AdminComponent implements OnInit {
     }
     this.deletingUser = true;
 
-    this.telegram.showPopup({
+    this.telegram.showPopup(
+      {
         title: 'Подтверждение',
         message: 'Вы уверены что хотите удалить аккаунт?',
         buttons: [
@@ -50,7 +49,8 @@ export class AdminComponent implements OnInit {
             window.location.reload();
           }
         }
-      });
+      },
+    );
 
     this.deletingUser = false;
   }
@@ -58,9 +58,7 @@ export class AdminComponent implements OnInit {
   constructor(
     private readonly api: ApiService,
     private readonly telegram: TelegramService,
-  ) {
-
-  }
+  ) {}
 
   async ngOnInit() {
     const interval = setInterval(async () => {
@@ -70,7 +68,9 @@ export class AdminComponent implements OnInit {
           window.location.reload();
         }
 
-        this.users = (await this.api.getAllUsers())?.filter((user: IAppUser) => user?.id !== AppComponent.appUser?.id);
+        this.users = (await this.api.getAllUsers())?.filter(
+          (user: IAppUser) => user?.id !== AppComponent.appUser?.id,
+        );
         console.log(this.users);
       }
     }, 16.67);

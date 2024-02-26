@@ -1,6 +1,11 @@
+/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Inject, Injectable } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { TgButton, TgPopupParams } from '../../static/interfaces/telegram.interfaces';
+import {
+  TgButton,
+  TgPopupParams,
+} from '../../static/interfaces/telegram.interfaces';
 
 @Injectable({
   providedIn: 'root',

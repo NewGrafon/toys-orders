@@ -1,23 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { TelegramService } from '../../services/telegram/telegram.service';
 import { ApiService } from '../../services/api/api.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';
 import { IApiEditUser } from '../../static/interfaces/create-user.interfaces';
-import { switchMap } from 'rxjs';
-import { log } from '@angular-devkit/build-angular/src/builders/ssr-dev-server';
 
 @Component({
   selector: 'app-edit-user',
   standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    RouterLink,
-  ],
+  imports: [FormsModule, ReactiveFormsModule, RouterLink],
   templateUrl: './edit-user.component.html',
-  styleUrl: './edit-user.component.scss'
+  styleUrl: './edit-user.component.scss',
 })
 export class EditUserComponent implements OnInit {
   private static instance: EditUserComponent;
@@ -25,11 +24,17 @@ export class EditUserComponent implements OnInit {
   id: number = -1;
 
   editUserForm = new FormGroup({
-    password: new FormControl('', [Validators.required, Validators.minLength(1)])
+    password: new FormControl('', [
+      Validators.required,
+      Validators.minLength(1),
+    ]),
   });
 
   get passwordValid(): boolean {
-    const valid = !(this.editUserForm.controls.password.invalid && this.editUserForm.controls.password.touched);
+    const valid = !(
+      this.editUserForm.controls.password.invalid &&
+      this.editUserForm.controls.password.touched
+    );
 
     if (valid) {
       this.formCheck();
@@ -39,9 +44,7 @@ export class EditUserComponent implements OnInit {
   }
 
   formCheck(): void {
-    if (
-      this.editUserForm.controls.password.valid
-    ) {
+    if (this.editUserForm.controls.password.valid) {
       this.telegram.MainButton.setText('Продолжить');
       this.telegram.MainButton.onClick(this.onSubmit);
       this.telegram.MainButton.show();
@@ -63,18 +66,20 @@ export class EditUserComponent implements OnInit {
 
     _this.telegram.MainButton.showProgress(false);
     const body: IApiEditUser = {
-      password: _this.editUserForm.controls.password.value as string
+      password: _this.editUserForm.controls.password.value as string,
     };
-    
+
     const result = await _this.api.editUser(_this.id, body);
     if (result) {
       _this.telegram.showPopup({
         title: 'Успех!',
         message: `Пароль успешно изменен. Сообщите работнику пароль, после закрытия этого окна вы больше не сможете просмотреть его. Пароль: "${body?.password}"`,
-        buttons: [{
-          type: 'ok',
-          text: 'Ок',
-        }],
+        buttons: [
+          {
+            type: 'ok',
+            text: 'Ок',
+          },
+        ],
       });
       _this.telegram.MainButton.hide();
       await _this.router.navigateByUrl('/admin');

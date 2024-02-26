@@ -1,6 +1,11 @@
 import { Component } from '@angular/core';
 import { TelegramService } from '../../services/telegram/telegram.service';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ApiService } from '../../services/api/api.service';
 import { IApiAuth } from '../../static/interfaces/auth.interface';
 import { JsonPipe } from '@angular/common';
@@ -8,7 +13,6 @@ import { CookieService } from 'ngx-cookie-service';
 import { COOKIE_TOKEN } from '../../static/consts/token.const';
 import { AppComponent } from '../../app.component';
 import { IAppUser } from '../../static/types/app-user.type';
-import { UserRole } from '../../static/enums/user.enums';
 import { Router } from '@angular/router';
 
 @Component({
@@ -19,7 +23,6 @@ import { Router } from '@angular/router';
   styleUrl: './auth.component.scss',
 })
 export class AuthComponent {
-
   protected get user(): IAppUser {
     return AppComponent.appUser;
   }
@@ -31,12 +34,18 @@ export class AuthComponent {
   }
 
   authForm = new FormGroup({
-    id: new FormControl('', [Validators.required, Validators.pattern(/^\d+$/), Validators.min(0)]),
+    id: new FormControl('', [
+      Validators.required,
+      Validators.pattern(/^\d+$/),
+      Validators.min(0),
+    ]),
     password: new FormControl('', Validators.required),
   });
 
   get idIsValid(): boolean {
-    const valid: boolean = !(this.authForm.controls.id.invalid && this.authForm.controls.id.touched);
+    const valid: boolean = !(
+      this.authForm.controls.id.invalid && this.authForm.controls.id.touched
+    );
 
     if (valid) {
       this.formCheck();
@@ -46,7 +55,10 @@ export class AuthComponent {
   }
 
   get passwordIsValid(): boolean {
-    const valid: boolean = !(this.authForm.controls.password.invalid && this.authForm.controls.password.touched);
+    const valid: boolean = !(
+      this.authForm.controls.password.invalid &&
+      this.authForm.controls.password.touched
+    );
 
     if (valid) {
       this.formCheck();
@@ -56,7 +68,10 @@ export class AuthComponent {
   }
 
   formCheck() {
-    if (this.authForm.controls.id.valid && this.authForm.controls.password.valid) {
+    if (
+      this.authForm.controls.id.valid &&
+      this.authForm.controls.password.valid
+    ) {
       this.telegram.MainButton.setText('Продолжить');
       this.telegram.MainButton.onClick(this.onSubmit);
       this.telegram.MainButton.show();
@@ -85,9 +100,9 @@ export class AuthComponent {
     const result = await _this.api.auth(body);
     if (result.session_token) {
       const date = new Date();
-      const value: number = Number.isNaN(result.expiresIn) 
-                              ? Number.parseInt(result.expiresIn.slice(0, -1)) 
-                              : Number.parseInt(result.expiresIn);
+      const value: number = Number.isNaN(result.expiresIn)
+        ? Number.parseInt(result.expiresIn.slice(0, -1))
+        : Number.parseInt(result.expiresIn);
       switch (true) {
         case result.expiresIn.includes('y'): {
           date.setFullYear(date.getFullYear() + value);
@@ -105,12 +120,13 @@ export class AuthComponent {
           date.setHours(date.getHours() + value);
           break;
         }
-        case result.expiresIn.includes('s') || !Number.isNaN(result.expiresIn): {
+        case result.expiresIn.includes('s') ||
+          !Number.isNaN(result.expiresIn): {
           date.setSeconds(date.getSeconds() + value);
           break;
         }
       }
-      
+
       _this.cookieService.set(COOKIE_TOKEN, result.session_token, date);
       _this.telegram.MainButton.hide();
       // const user = await AppComponent.updateUser();
