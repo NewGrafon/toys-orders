@@ -1,8 +1,5 @@
 module.exports = {
     parser: '@typescript-eslint/parser',
-    // presets: [
-    //   "plugin:oxlint/recommended",
-    // ],
     parserOptions: {
       project: 'tsconfig.json',
       tsconfigRootDir: __dirname,
