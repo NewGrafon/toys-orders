@@ -3,9 +3,9 @@ import { AuthComponent } from './pages/auth/auth.component';
 import { AdminComponent } from './pages/admin/admin.component';
 import { CreateOrderComponent } from './pages/create-order/create-order.component';
 import { OrdersListComponent } from './pages/orders-list/orders-list.component';
-import { CurrentOrdersComponent } from './pages/current-orders/current-orders.component';
 import { CreateUserComponent } from './pages/create-user/create-user.component';
 import { EditUserComponent } from './pages/edit-user/edit-user.component';
+import { CartComponent } from './pages/cart/cart.component';
 
 export const routes: Routes = [
   {
@@ -26,6 +26,11 @@ export const routes: Routes = [
   {
     path: 'edit-user/:id',
     component: EditUserComponent,
+    pathMatch: 'full',
+  },
+  {
+    path: 'cart',
+    component: CartComponent,
     pathMatch: 'full',
   },
   {
