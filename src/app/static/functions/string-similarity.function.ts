@@ -1,3 +1,97 @@
+export function matchSortStringsToOneString(
+  strings: string[],
+  value: string,
+  oldSimilarityList: ISimilarityItem[],
+): ISimilarityItem[] {
+  const localColorSimilarityList: any = {};
+
+  strings.forEach((str) => {
+    const longer: string = value.length >= str.length ? value : str;
+    const shorter: string = longer === value ? str : value;
+    localColorSimilarityList[str] = similarity(longer, shorter);
+  });
+
+  const keys = Object.keys(localColorSimilarityList);
+  for (let i = 0; i <= keys.length; i++) {
+    const str = keys[i];
+    const similarity = localColorSimilarityList[keys[i]];
+    const obj: ISimilarityItem = {
+      str,
+      similarity,
+    };
+    localColorSimilarityList[keys[i]] = obj;
+  }
+
+  const sorted: ISimilarityItem[] = (
+    Object.values(localColorSimilarityList) as ISimilarityItem[]
+  )
+    .sort(function (a: ISimilarityItem, b: ISimilarityItem) {
+      if (a.similarity < b.similarity) {
+        return -1;
+      }
+      if (a.similarity > b.similarity) {
+        return 1;
+      }
+      return 0;
+    })
+    .reverse()
+    .filter((obj: any) => obj.similarity > 0);
+  // .slice(0, 5)
+  // .sort(function (a: ISimilarityItem, b: ISimilarityItem) {
+  //   if (a.code < b.code) {
+  //     return -1;
+  //   }
+  //   if (a.code > b.code) {
+  //     return 1;
+  //   }
+  //   return 0;
+  // });
+
+  // const inputCode: number = Number(value);
+  // if (
+  //   !Number.isNaN(value) &&
+  //   inputCode >= 1 &&
+  //   inputCode <= this.colorsInfo.length
+  // ) {
+  //   let codeIndex: number = -1;
+  //   sorted.every((color: ISimilarityItem, index) => {
+  //     if (inputCode === color.code) {
+  //       codeIndex = index;
+  //       return false;
+  //     }
+
+  //     return true;
+  //   });
+  //   if (codeIndex !== -1) {
+  //     const firstColor = {
+  //       code: sorted[0].code,
+  //       similarity: sorted[0].similarity,
+  //     };
+  //     sorted[0] = sorted[codeIndex];
+  //     sorted[codeIndex] = firstColor;
+  //   }
+  // }
+
+  let same: boolean = true;
+
+  sorted.every((item: ISimilarityItem, index: number) => {
+    const oldItem = oldSimilarityList[index];
+
+    if (item.similarity !== oldItem?.similarity || item.str !== oldItem?.str) {
+      same = false;
+      return false;
+    }
+
+    return true;
+  });
+
+  if (!same) {
+    return sorted;
+  }
+
+  return [];
+}
+
 export function similarity(s1: string, s2: string) {
   let longer = s1;
   let shorter = s2;
@@ -38,4 +132,9 @@ export function similarity(s1: string, s2: string) {
     }
     return costs[s2.length];
   }
+}
+
+export interface ISimilarityItem {
+  str: string;
+  similarity: number;
 }
