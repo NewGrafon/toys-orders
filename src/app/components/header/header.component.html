@@ -7,10 +7,16 @@
           Список всех заказов
       </h2>
       <h2
-        routerLink="/create"
+        routerLink="/create_order"
         (click)="opened = false;"
         [class]="user.role !== UserRole.Worker ? 'hidden' : ''">
           Создать заказ
+      </h2>
+      <h2
+        routerLink="/create_toy"
+        (click)="opened = false;"
+        [class]="user.role !== UserRole.Worker ? 'hidden' : ''">
+          Добавить новую деталь
       </h2>
 <!--      <h2-->
 <!--        routerLink="/current"-->
