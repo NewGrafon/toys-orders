@@ -7,7 +7,7 @@ export type IAppUser =
       firstname?: string;
       lastname?: string;
       role?: UserRole;
-      cart: ICartToy[];
+      cart?: ICartToy[];
       deletedAt?: number | null;
       logged: boolean;
     }
