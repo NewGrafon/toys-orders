@@ -17,11 +17,12 @@ import {
   IOrder,
 } from '../../static/interfaces/order.interfaces';
 import { Router } from '@angular/router';
+import { ICart, ICartToy } from '../../static/interfaces/cart.interfaces';
 import {
+  IApiCreateToyResponse,
   IApiToyResponse,
-  ICart,
-  ICartToy,
-} from '../../static/interfaces/cart.interfaces';
+  IToy,
+} from '../../static/interfaces/toy.interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -207,20 +208,6 @@ export class ApiService {
   }
 
   // need test
-  public async getAllToys(): Promise<IApiToyResponse[]> {
-    let result: IApiToyResponse[];
-
-    try {
-      result = await this.api.get('toys/get_all').json();
-    } catch (e) {
-      console.error(e);
-      result = [];
-    }
-
-    return result;
-  }
-
-  // need test
   public async getToyById(
     id: number | string,
   ): Promise<IApiToyResponse | undefined> {
@@ -341,6 +328,38 @@ export class ApiService {
     } catch (e) {
       console.error(e);
       result = {};
+    }
+
+    return result;
+  }
+
+  public async createToy(
+    toy: IToy,
+  ): Promise<IApiCreateToyResponse | undefined> {
+    let result: IApiCreateToyResponse | undefined;
+
+    try {
+      result = await this.api
+        .post('toys/create', {
+          json: toy,
+        })
+        .json();
+    } catch (e) {
+      console.error(e);
+      result = undefined;
+    }
+
+    return result;
+  }
+
+  public async getAllToys(): Promise<IApiToyResponse[]> {
+    let result: IApiToyResponse[];
+
+    try {
+      result = await this.api.get(`toys/get_all`).json();
+    } catch (e) {
+      console.error(e);
+      result = [];
     }
 
     return result;

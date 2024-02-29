@@ -21,6 +21,12 @@
 
       <div class="wrapper-row form-wrap"></div>
 
+      <label for="">
+        ИЛИ
+      </label>
+
+      <div class="wrapper-row form-wrap"></div>
+
       <label for="code">
         Код детали
       </label>
@@ -29,6 +35,39 @@
              type="text" formControlName="code"/>
 
       <div class="wrapper-row form-wrap"></div>
+
+      @if (createOrderForm.controls.partName.valid === false) {
+        <label for="">
+          Подсказки по названию детали
+        </label>
+
+        <div class="find-color">
+          @for (obj of PartNameSimilarityList; track obj) {
+            <div class="item" (click)="setPartNameAndCode(obj.str, undefined);">
+              Название {{ obj.str }}
+            </div>
+          }
+        </div>
+
+        <div class="wrapper-row form-wrap"></div>
+      }
+      
+
+      @if (createOrderForm.controls.code.valid === false) {
+        <label for="">
+          Подсказки по коду детали
+        </label>
+
+        <div class="find-color">
+          @for (obj of CodeSimilarityList; track obj) {
+            <div class="item" (click)="setPartNameAndCode(undefined, obj.str);">
+              Код {{ obj.str }}
+            </div>
+          }
+        </div>
+
+        <div class="wrapper-row form-wrap"></div>
+      }
 
       <label for="color">
         Цвет | Код цвета
@@ -60,14 +99,14 @@
              [class]="amountValid ? null : 'invalid'"
              type="number" min="1" formControlName="amount"/>
 
-      <div class="wrapper-row form-wrap"></div>
+      <!-- <div class="wrapper-row form-wrap"></div>
 
       <label for="desktop">
         Стол доставки
       </label>
       <input id="desktop"
              [class]="desktopValid ? null : 'invalid'"
-             type="text" formControlName="desktop"/>
+             type="text" formControlName="desktop"/> -->
 
     </div>
   </form>

@@ -8,6 +8,7 @@ import { COOKIE_TOKEN } from './static/consts/token.const';
 import { CookieService } from 'ngx-cookie-service';
 import { UserRole } from './static/enums/user.enums';
 import { ColorInfo } from './static/interfaces/colors-info.interface';
+import { IApiToyResponse } from './static/interfaces/toy.interfaces';
 
 @Component({
   selector: 'app-root',
@@ -27,6 +28,11 @@ export class AppComponent implements OnInit {
   private _colorsInfo: ColorInfo[] = [];
   public static get colorsInfo(): ColorInfo[] {
     return AppComponent.Instance._colorsInfo;
+  }
+
+  private _allToys: IApiToyResponse[] = [];
+  public static get allToys(): IApiToyResponse[] {
+    return AppComponent.Instance._allToys;
   }
 
   protected static instance: AppComponent;
@@ -71,6 +77,7 @@ export class AppComponent implements OnInit {
         firstname: undefined,
         id: undefined,
         lastname: undefined,
+        cart: undefined,
         logged: false,
         role: undefined,
       };
@@ -103,6 +110,12 @@ export class AppComponent implements OnInit {
             url = '/';
             await this.router.navigateByUrl('/');
           }
+
+          const toysJson = (await this.api.getAllToys()) || [];
+
+          AppComponent.Instance._allToys = toysJson;
+
+          console.log(AppComponent.Instance._allToys);
 
           if (
             user.role !== UserRole.Admin &&

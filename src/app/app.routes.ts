@@ -6,6 +6,7 @@ import { OrdersListComponent } from './pages/orders-list/orders-list.component';
 import { CreateUserComponent } from './pages/create-user/create-user.component';
 import { EditUserComponent } from './pages/edit-user/edit-user.component';
 import { CartComponent } from './pages/cart/cart.component';
+import { CreateToyComponent } from './pages/create-toy/create-toy.component';
 
 export const routes: Routes = [
   {
@@ -34,7 +35,12 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'create',
+    path: 'create_toy',
+    component: CreateToyComponent,
+    pathMatch: 'full',
+  },
+  {
+    path: 'create_order',
     component: CreateOrderComponent,
     pathMatch: 'full',
   },

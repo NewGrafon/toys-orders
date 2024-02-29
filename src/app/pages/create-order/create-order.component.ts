@@ -9,12 +9,17 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { TelegramService } from '../../services/telegram/telegram.service';
 import { ApiService } from '../../services/api/api.service';
-import { IApiCreateOrder } from '../../static/interfaces/order.interfaces';
 import { ColorInfo } from '../../static/interfaces/colors-info.interface';
 import { AppComponent } from '../../app.component';
-import { similarity } from '../../static/functions/string-similarity.function';
+import {
+  ISimilarityItem,
+  matchSortStringsToOneString,
+  similarity,
+} from '../../static/functions/string-similarity.function';
 import { CommonModule } from '@angular/common';
 import { IColorSimilarityItem } from '../../static/interfaces/create-order.interfaces';
+import { IApiToyResponse } from '../../static/interfaces/toy.interfaces';
+import { IApiChangeInCart } from '../../static/interfaces/cart.interfaces';
 
 @Component({
   selector: 'app-create-order',
@@ -28,6 +33,10 @@ export class CreateOrderComponent {
 
   get colorsInfo(): ColorInfo[] {
     return AppComponent.colorsInfo;
+  }
+
+  get allToys(): IApiToyResponse[] {
+    return AppComponent.allToys;
   }
 
   createOrderForm = new FormGroup({
@@ -59,11 +68,38 @@ export class CreateOrderComponent {
   //   return valid;
   // }
 
+  private partNameSimilarityList: ISimilarityItem[] = [];
+  get PartNameSimilarityList(): ISimilarityItem[] {
+    return this.partNameSimilarityList;
+  }
   get partNameValid(): boolean {
-    const valid = !(
+    let valid = !(
       this.createOrderForm.controls.partName.invalid &&
       this.createOrderForm.controls.partName.touched
     );
+    const inputValue: string = this.createOrderForm.controls.partName
+      .value as string;
+
+    if (
+      this.allToys.filter((toy) => toy.partName === inputValue).length === 1
+    ) {
+      valid = true;
+      this.partNameSimilarityList = [];
+    } else if (inputValue.length > 0) {
+      const partNameStrings: string[] = this.allToys.map((toy) => toy.partName);
+
+      valid = partNameStrings.includes(inputValue);
+
+      if (!valid) {
+        this.partNameSimilarityList = matchSortStringsToOneString(
+          partNameStrings,
+          inputValue,
+          this.partNameSimilarityList,
+        );
+      }
+    } else {
+      this.partNameSimilarityList = [];
+    }
 
     if (valid) {
       this.formCheck();
@@ -72,17 +108,63 @@ export class CreateOrderComponent {
     return valid;
   }
 
+  private codeSimilarityList: ISimilarityItem[] = [];
+  get CodeSimilarityList(): ISimilarityItem[] {
+    return this.codeSimilarityList;
+  }
   get codeValid(): boolean {
-    const valid = !(
+    let valid = !(
       this.createOrderForm.controls.code.invalid &&
       this.createOrderForm.controls.code.touched
     );
+    const inputValue: string = this.createOrderForm.controls.code
+      .value as string;
+
+    if (this.allToys.filter((toy) => toy.code === inputValue).length === 1) {
+      valid = true;
+      this.codeSimilarityList = [];
+    } else if (inputValue.length > 0) {
+      const codeStrings: string[] = this.allToys.map((toy) => toy.code);
+
+      valid = codeStrings.includes(inputValue);
+
+      if (!valid) {
+        this.codeSimilarityList = matchSortStringsToOneString(
+          codeStrings,
+          inputValue,
+          this.codeSimilarityList,
+        );
+      }
+    } else {
+      this.codeSimilarityList = [];
+    }
 
     if (valid) {
       this.formCheck();
     }
 
     return valid;
+  }
+
+  setPartNameAndCode(partName?: string, code?: string): void {
+    if (!partName && !code) {
+      return;
+    }
+    if (partName) {
+      const toy = this.allToys.filter((toy) => toy.partName === partName)[0];
+      if (toy) {
+        this.createOrderForm.controls.partName.setValue(toy.partName);
+        this.createOrderForm.controls.code.setValue(toy.code);
+      }
+    }
+
+    if (code) {
+      const toy = this.allToys.filter((toy) => toy.code === code)[0];
+      if (toy) {
+        this.createOrderForm.controls.partName.setValue(toy.partName);
+        this.createOrderForm.controls.code.setValue(toy.code);
+      }
+    }
   }
 
   private colorSimilarityList: IColorSimilarityItem[] = [];
@@ -247,13 +329,12 @@ export class CreateOrderComponent {
 
   formCheck(): void {
     if (
-      // this.createOrderForm.controls.fullText.valid
       this.createOrderForm.controls.partName.valid &&
       this.createOrderForm.controls.code.valid &&
       this.createOrderForm.controls.color.valid &&
       this.createOrderForm.controls.desktop.valid
     ) {
-      this.telegram.MainButton.setText('Продолжить');
+      this.telegram.MainButton.setText('Добавить в корзину');
       this.telegram.MainButton.onClick(this.onSubmit);
       this.telegram.MainButton.show();
     } else {
@@ -276,24 +357,21 @@ export class CreateOrderComponent {
     const colorSplitted = (
       _this.createOrderForm.controls.color.value as string
     ).split(' - ');
-    const body: IApiCreateOrder = {
-      // fullText: _this.createOrderForm.controls.fullText.value as string,
-      partName: _this.createOrderForm.controls.partName.value as string,
-      code: _this.createOrderForm.controls.code.value as string,
-      colorCode: colorSplitted[0],
-      amount:
-        Number.parseInt(
-          _this.createOrderForm.controls.amount.value as string,
-        ) || 1,
-      desktop: _this.createOrderForm.controls.desktop.value as string,
-    };
 
-    const result = await _this.api.createOrder(body);
+    const toyPartName: string = _this.createOrderForm.controls.partName
+      .value as string;
+    const toyCode: string = _this.createOrderForm.controls.code.value as string;
+    const toyId: number = this.allToys.filter((toy) => {
+      if (toy.partName === toyPartName && toy.code === toyCode) {
+        return true;
+      }
+      return false;
+    })[0]?.id;
 
-    if (result) {
+    if (toyId === undefined) {
       _this.telegram.showPopup({
-        title: 'Успех!',
-        message: `Заказ успешно создан.`,
+        title: 'Ошибка!',
+        message: `Произошла ошибка при попытке узнать id игрушки!\nПопробуйте снова создать заказ.`,
         buttons: [
           {
             type: 'ok',
@@ -302,7 +380,33 @@ export class CreateOrderComponent {
         ],
       });
       _this.telegram.MainButton.hide();
-      await _this.router.navigateByUrl('/list');
+      window.location.reload();
+    }
+
+    const body: IApiChangeInCart = {
+      id: toyId,
+      colorCode: colorSplitted[0],
+      amount:
+        Number.parseInt(
+          _this.createOrderForm.controls.amount.value as string,
+        ) || 1,
+    };
+
+    const result = await _this.api.changeAmountInCart(body);
+
+    if (result) {
+      _this.telegram.showPopup({
+        title: 'Успех!',
+        message: `Заказ успешно добавлен в корзину.`,
+        buttons: [
+          {
+            type: 'ok',
+            text: 'Ок',
+          },
+        ],
+      });
+      _this.telegram.MainButton.hide();
+      await _this.router.navigateByUrl('/cart');
       window.location.reload();
     }
 
