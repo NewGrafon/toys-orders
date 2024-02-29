@@ -9,8 +9,4 @@ export interface ICart {
   desktop: string;
 }
 
-export interface IApiToyResponse {
-  id: number;
-  partName: string;
-  code: string;
-}
+export interface IApiChangeInCart extends ICartToy {}
