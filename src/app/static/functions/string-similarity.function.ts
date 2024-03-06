@@ -1,7 +1,7 @@
 export function matchSortStringsToOneString(
   strings: string[],
   value: string,
-  oldSimilarityList: ISimilarityItem[],
+  // oldSimilarityList: ISimilarityItem[],
 ): ISimilarityItem[] {
   const localColorSimilarityList: any = {};
 
@@ -72,24 +72,26 @@ export function matchSortStringsToOneString(
   //   }
   // }
 
-  let same: boolean = true;
+  // let same: boolean = true;
 
-  sorted.every((item: ISimilarityItem, index: number) => {
-    const oldItem = oldSimilarityList[index];
+  // sorted.every((item: ISimilarityItem, index: number) => {
+  //   const oldItem = oldSimilarityList[index];
 
-    if (item.similarity !== oldItem?.similarity || item.str !== oldItem?.str) {
-      same = false;
-      return false;
-    }
+  //   if (item.similarity !== oldItem?.similarity || item.str !== oldItem?.str) {
+  //     same = false;
+  //     return false;
+  //   }
 
-    return true;
-  });
+  //   return true;
+  // });
 
-  if (!same) {
-    return sorted;
-  }
+  // if (!same) {
+  //   return sorted;
+  // }
 
-  return [];
+  // return [];
+
+  return sorted;
 }
 
 export function similarity(s1: string, s2: string) {
