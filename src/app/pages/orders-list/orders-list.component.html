@@ -18,28 +18,32 @@
                [height]="32" [width]="20">
         </div>
         <div [ngClass]="['content', deliverOpened ? 'content-opened' : '']">
-          @if (orders === undefined) {
+          @if (timestamps === undefined) {
             <div class="loader-div">
               <img src="/assets/img/loading.gif" alt="Загрузка..." height="128" width="128" />
             </div>
           } @else {
-            @for (order of CurrentOrders; track order) {
+            @for (timestamp of CurrentTimestamps; track timestamp) {
               <div class="content-item">
-                <p>Заявка №{{ order.id }}</p>
-                <p>Текст заявки:</p>
+                <p>Заявка №{{ timestamp.cartTimestamp }}</p>
+                <!-- <p>Текст заявки:</p> -->
                 <div class="order-properties">
                   <div>
-                    <p>Название детали: {{ order.partName }}</p>
-                    <p>Код: {{ order.code }}</p>
-                    <p>Цвет: {{ order.color }}</p>
-                    <p>Код цвета: {{ order.colorCode }}</p>
-                    <p>Количество: {{ order.amount }}</p>
-                    <p>Стол доставки: {{ order.desktop }}</p>
+                    @for (item of timestamp.orders; track item; let index = $index) {
+                      <p>Позиция {{ index+1 }}:</p>
+                      <p>Название детали: {{ item.partName }}</p>
+                      <p>Код: {{ item.code }}</p>
+                      <p>Цвет: {{ item.color }}</p>
+                      <p>Код цвета: {{ item.colorCode }}</p>
+                      <p>Количество: {{ item.amount }}</p>
+                      <hr>
+                    }
+                    <p>Стол доставки: {{ timestamp.orders[0].desktop }}</p>
                     <!-- <p>{{ order.fullText }}</p> -->
                   </div>
                 </div>
-                <button (click)="closeOrder(order.id)">Завершить заказ</button>
-                <p [ngClass]="['hint', 'created-difference']">Создан: {{ timeDifference(order.createdAt) }}</p>
+                <button (click)="closeOrders(timestamp.cartTimestamp)">Завершить заказ</button>
+                <p [ngClass]="['hint', 'created-difference']">Создан: {{ timeDifference(timestamp.cartTimestamp) }}</p>
               </div>
             }
           }
@@ -57,28 +61,32 @@
                [height]="32" [width]="20">
         </div>
         <div [ngClass]="['content', workerOpened ? 'content-opened' : '']">
-          @if (orders === undefined) {
+          @if (timestamps === undefined) {
             <div class="loader-div">
               <img src="/assets/img/loading.gif" alt="Загрузка..." height="128" width="128" />
             </div>
           } @else {
-            @for (order of CreatedOrders; track order) {
+            @for (timestamp of CreatedTimestamps; track timestamp) {
               <div class="content-item">
-                <p>Заявка №{{ order.id }}</p>
-                <p>Текст заявки:</p>
+                <p>Заявка №{{ timestamp.cartTimestamp }}</p>
+                <!-- <p>Текст заявки:</p> -->
                 <div class="order-properties">
                   <div>
-                    <p>Название детали: {{ order.partName }}</p>
-                    <p>Код: {{ order.code }}</p>
-                    <p>Цвет: {{ order.color }}</p>
-                    <p>Код цвета: {{ order.colorCode }}</p>
-                    <p>Количество: {{ order.amount }}</p>
-                    <p>Стол доставки: {{ order.desktop }}</p>
+                    @for (item of timestamp.orders; track item; let index = $index) {
+                      <p>Позиция {{ index+1 }}:</p>
+                      <p>Название детали: {{ item.partName }}</p>
+                      <p>Код: {{ item.code }}</p>
+                      <p>Цвет: {{ item.color }}</p>
+                      <p>Код цвета: {{ item.colorCode }}</p>
+                      <p>Количество: {{ item.amount }}</p>
+                      <hr>
+                    }
+                    <p>Стол доставки: {{ timestamp.orders[0].desktop }}</p>
                     <!-- <p>{{ order.fullText }}</p> -->
                   </div>
                 </div>
-                <button class="red" (click)="cancelOrder(order.id)">Отменить заказ</button>
-                <p [ngClass]="['hint', 'created-difference']">Создан: {{ timeDifference(order.createdAt) }}</p>
+                <button class="red" (click)="cancelOrders(timestamp.cartTimestamp)">Отменить заказ</button>
+                <p [ngClass]="['hint', 'created-difference']">Создан: {{ timeDifference(timestamp.cartTimestamp) }}</p>
               </div>
             }
           }
@@ -95,18 +103,18 @@
              [width]="20">
       </div>
       <div [ngClass]="['content', otherOpened ? 'content-opened' : '']">
-        @if (orders === undefined) {
+        @if (timestamps === undefined) {
           <div class="loader-div">
             <img src="/assets/img/loading.gif" alt="Загрузка..." height="128" width="128" />
           </div>
         } @else {
-          @for (order of OtherOrders; track order) {
+          @for (timestamp of OtherTimestamps; track timestamp) {
             <div class="content-item">
-              <p>Заявка №{{ order.id }}</p>
+              <p>Заявка №{{ timestamp.orders[0].cartTimestamp }}</p>
               @if (user.role === UserRole.Deliver) {
-                <button (click)="takeOrder(order.id)">Взять заказ</button>
+                <button (click)="takeOrders(timestamp.cartTimestamp)">Взять заказ</button>
               }
-              <p [ngClass]="['hint', 'created-difference']">Создан: {{ timeDifference(order.createdAt) }}</p>
+              <p [ngClass]="['hint', 'created-difference']">Создан: {{ timeDifference(timestamp.cartTimestamp) }}</p>
             </div>
           }
         }

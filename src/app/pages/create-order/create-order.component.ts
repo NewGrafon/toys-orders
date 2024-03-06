@@ -80,22 +80,33 @@ export class CreateOrderComponent {
     const inputValue: string = this.createOrderForm.controls.partName
       .value as string;
 
-    if (
-      this.allToys.filter((toy) => toy.partName === inputValue).length === 1
-    ) {
+    const partNameStrings: string[] = this.allToys.map((toy) => toy.partName);
+
+    if (partNameStrings.includes(inputValue)) {
       valid = true;
       this.partNameSimilarityList = [];
     } else if (inputValue.length > 0) {
-      const partNameStrings: string[] = this.allToys.map((toy) => toy.partName);
-
-      valid = partNameStrings.includes(inputValue);
-
-      if (!valid) {
-        this.partNameSimilarityList = matchSortStringsToOneString(
-          partNameStrings,
-          inputValue,
-          this.partNameSimilarityList,
-        );
+      valid = false;
+      const newList: ISimilarityItem[] = matchSortStringsToOneString(
+        partNameStrings,
+        inputValue,
+        // this.partNameSimilarityList,
+      );
+      let same: boolean = true;
+      newList.every((item, index) => {
+        const oldItem = this.partNameSimilarityList[index];
+        if (
+          oldItem === undefined ||
+          item.str !== oldItem.str ||
+          item.similarity !== oldItem.similarity
+        ) {
+          same = false;
+          return false;
+        }
+        return true;
+      });
+      if (!same) {
+        this.partNameSimilarityList = newList;
       }
     } else {
       this.partNameSimilarityList = [];
@@ -120,20 +131,33 @@ export class CreateOrderComponent {
     const inputValue: string = this.createOrderForm.controls.code
       .value as string;
 
-    if (this.allToys.filter((toy) => toy.code === inputValue).length === 1) {
+    const codeStrings: string[] = this.allToys.map((toy) => toy.code);
+
+    if (codeStrings.includes(inputValue)) {
       valid = true;
       this.codeSimilarityList = [];
     } else if (inputValue.length > 0) {
-      const codeStrings: string[] = this.allToys.map((toy) => toy.code);
-
-      valid = codeStrings.includes(inputValue);
-
-      if (!valid) {
-        this.codeSimilarityList = matchSortStringsToOneString(
-          codeStrings,
-          inputValue,
-          this.codeSimilarityList,
-        );
+      valid = false;
+      const newList: ISimilarityItem[] = matchSortStringsToOneString(
+        codeStrings,
+        inputValue,
+        // this.codeSimilarityList,
+      );
+      let same: boolean = true;
+      newList.every((item, index) => {
+        const oldItem = this.codeSimilarityList[index];
+        if (
+          oldItem === undefined ||
+          item.str !== oldItem.str ||
+          item.similarity !== oldItem.similarity
+        ) {
+          same = false;
+          return false;
+        }
+        return true;
+      });
+      if (!same) {
+        this.codeSimilarityList = newList;
       }
     } else {
       this.codeSimilarityList = [];
@@ -314,25 +338,19 @@ export class CreateOrderComponent {
     return valid;
   }
 
-  get desktopValid(): boolean {
-    const valid = !(
-      this.createOrderForm.controls.desktop.invalid &&
-      this.createOrderForm.controls.desktop.touched
+  formCheck(): void {
+    console.log(
+      this.createOrderForm.controls.partName.valid,
+      this.createOrderForm.controls.code.valid,
+      this.createOrderForm.controls.color.valid,
+      this.createOrderForm.controls.amount.valid,
     );
 
-    if (valid) {
-      this.formCheck();
-    }
-
-    return valid;
-  }
-
-  formCheck(): void {
     if (
       this.createOrderForm.controls.partName.valid &&
       this.createOrderForm.controls.code.valid &&
       this.createOrderForm.controls.color.valid &&
-      this.createOrderForm.controls.desktop.valid
+      this.createOrderForm.controls.amount.valid
     ) {
       this.telegram.MainButton.setText('Добавить в корзину');
       this.telegram.MainButton.onClick(this.onSubmit);
@@ -345,6 +363,7 @@ export class CreateOrderComponent {
 
   onSubmitting: boolean = false;
 
+  // TODO fix
   async onSubmit(): Promise<void> {
     const _this = CreateOrderComponent.instance;
 
@@ -361,7 +380,7 @@ export class CreateOrderComponent {
     const toyPartName: string = _this.createOrderForm.controls.partName
       .value as string;
     const toyCode: string = _this.createOrderForm.controls.code.value as string;
-    const toyId: number = this.allToys.filter((toy) => {
+    const toyId: number = _this.allToys.filter((toy) => {
       if (toy.partName === toyPartName && toy.code === toyCode) {
         return true;
       }

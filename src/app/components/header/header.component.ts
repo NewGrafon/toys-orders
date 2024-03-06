@@ -10,16 +10,11 @@ import { TelegramService } from '../../services/telegram/telegram.service';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [
-    JsonPipe,
-    RouterLink,
-    CommonModule,
-  ],
+  imports: [JsonPipe, RouterLink, CommonModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
-
   private static instance: HeaderComponent;
 
   opened: boolean = false;
@@ -33,7 +28,8 @@ export class HeaderComponent {
   }
 
   async logout(): Promise<void> {
-    this.telegram.showPopup({
+    this.telegram.showPopup(
+      {
         title: 'Выход из аккаунта',
         message: `Вы уверены что хотите выйти из аккаунта?`,
         buttons: [
@@ -53,7 +49,8 @@ export class HeaderComponent {
         if (id === '64') {
           await AppComponent.Instance.logout();
         }
-      });
+      },
+    );
   }
 
   switchMenu(): void {

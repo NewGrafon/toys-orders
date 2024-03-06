@@ -17,7 +17,7 @@ import {
   IOrder,
 } from '../../static/interfaces/order.interfaces';
 import { Router } from '@angular/router';
-import { ICart, ICartToy } from '../../static/interfaces/cart.interfaces';
+import { IApiCart, ICartToy } from '../../static/interfaces/cart.interfaces';
 import {
   IApiCreateToyResponse,
   IApiToyResponse,
@@ -256,7 +256,7 @@ export class ApiService {
   // }
 
   // need test
-  public async confirmCart(cart: ICart): Promise<IOrder[]> {
+  public async confirmCart(cart: IApiCart): Promise<IOrder[]> {
     let result: IOrder[];
 
     try {

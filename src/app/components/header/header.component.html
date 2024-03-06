@@ -18,6 +18,14 @@
         [class]="user.role !== UserRole.Worker ? 'hidden' : ''">
           Добавить новую деталь
       </h2>
+      @if (user?.cart !== undefined) {
+        <h2
+        routerLink="/cart"
+        (click)="opened = false;"
+        [class]="user.role !== UserRole.Worker ? 'hidden' : ''">
+          Корзина
+        </h2>
+      }
 <!--      <h2-->
 <!--        routerLink="/current"-->
 <!--        (click)="opened = false;"-->

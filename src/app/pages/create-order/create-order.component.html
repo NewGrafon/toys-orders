@@ -1,7 +1,7 @@
 <div class="create-order">
   <h2>Создание заказа</h2>
   <hr>
-  <a routerLink="/list"><- Назад</a>
+  <a routerLink="/cart"><- Назад</a>
   <form [formGroup]="createOrderForm">
     <div class="create-order-form">
 
@@ -36,7 +36,7 @@
 
       <div class="wrapper-row form-wrap"></div>
 
-      @if (createOrderForm.controls.partName.valid === false) {
+      @if (PartNameSimilarityList.length > 0) {
         <label for="">
           Подсказки по названию детали
         </label>
@@ -44,7 +44,7 @@
         <div class="find-color">
           @for (obj of PartNameSimilarityList; track obj) {
             <div class="item" (click)="setPartNameAndCode(obj.str, undefined);">
-              Название {{ obj.str }}
+              Название {{ obj?.str }}
             </div>
           }
         </div>
@@ -53,7 +53,7 @@
       }
       
 
-      @if (createOrderForm.controls.code.valid === false) {
+      @if (CodeSimilarityList.length > 0) {
         <label for="">
           Подсказки по коду детали
         </label>
@@ -61,7 +61,7 @@
         <div class="find-color">
           @for (obj of CodeSimilarityList; track obj) {
             <div class="item" (click)="setPartNameAndCode(undefined, obj.str);">
-              Код {{ obj.str }}
+              Код {{ obj?.str }}
             </div>
           }
         </div>
@@ -98,15 +98,6 @@
       <input id="amount"
              [class]="amountValid ? null : 'invalid'"
              type="number" min="1" formControlName="amount"/>
-
-      <!-- <div class="wrapper-row form-wrap"></div>
-
-      <label for="desktop">
-        Стол доставки
-      </label>
-      <input id="desktop"
-             [class]="desktopValid ? null : 'invalid'"
-             type="text" formControlName="desktop"/> -->
 
     </div>
   </form>

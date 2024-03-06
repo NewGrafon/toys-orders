@@ -5,8 +5,10 @@ export interface ICartToy {
 }
 
 export interface ICart {
-  cart: ICartToy[];
+  cart?: ICartToy[];
   desktop: string;
 }
+
+export interface IApiCart extends ICart {}
 
 export interface IApiChangeInCart extends ICartToy {}

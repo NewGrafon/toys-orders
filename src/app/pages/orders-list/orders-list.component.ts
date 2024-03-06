@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IOrder } from '../../static/interfaces/order.interfaces';
+import { IApiOrdersByTimestamp } from '../../static/interfaces/order.interfaces';
 import { IAppUser } from '../../static/types/app-user.type';
 import { AppComponent } from '../../app.component';
 import { ApiService } from '../../services/api/api.service';
@@ -13,10 +13,7 @@ import { ColorInfo } from '../../static/interfaces/colors-info.interface';
 @Component({
   selector: 'app-orders-list',
   standalone: true,
-  imports: [
-    NgClass,
-    FormsModule,
-  ],
+  imports: [NgClass, FormsModule],
   templateUrl: './orders-list.component.html',
   styleUrl: './orders-list.component.scss',
 })
@@ -26,7 +23,7 @@ export class OrdersListComponent {
   }
 
   currentDate: Date = new Date();
-  orders: IOrder[] | undefined;
+  timestamps: IApiOrdersByTimestamp[] | undefined;
 
   // getById(id: number) {
   //   return this.orders?.find((order) => order.id === id);
@@ -34,141 +31,168 @@ export class OrdersListComponent {
 
   deliverOpened: boolean = false;
 
-  get CurrentOrders(): IOrder[] {
-    return this.orders?.filter((order) => order.takenBy?.id === this.user?.id) || [];
+  get CurrentTimestamps(): IApiOrdersByTimestamp[] {
+    return (
+      this.timestamps?.filter(
+        (timestamp) => timestamp.orders[0].takenBy?.id === this.user?.id,
+      ) || []
+    );
   }
 
   workerOpened: boolean = false;
 
-  get CreatedOrders(): IOrder[] {
-    return this.orders?.filter((order) => order.creator?.id === this.user?.id) || [];
+  get CreatedTimestamps(): IApiOrdersByTimestamp[] {
+    return (
+      this.timestamps?.filter(
+        (timestamp) => timestamp.orders[0].creator?.id === this.user?.id,
+      ) || []
+    );
   }
 
   otherOpened: boolean = false;
 
-  get OtherOrders(): IOrder[] {
-    return this.orders?.filter((order) => order.takenBy?.id !== this.user?.id && order.creator?.id !== this.user?.id) || [];
+  get OtherTimestamps(): IApiOrdersByTimestamp[] {
+    return (
+      this.timestamps?.filter(
+        (timestamp) =>
+          timestamp.orders[0].takenBy?.id !== this.user?.id &&
+          timestamp.orders[0].creator?.id !== this.user?.id,
+      ) || []
+    );
   }
 
-  orderDecisionChoosing: boolean = false;
+  timestampDecisionChoosing: boolean = false;
 
-  async takeOrder(id: number): Promise<void> {
-    if (this.orderDecisionChoosing) {
+  async takeOrders(timestamp: number): Promise<void> {
+    if (this.timestampDecisionChoosing) {
       return;
     }
-    this.orderDecisionChoosing = true;
+    this.timestampDecisionChoosing = true;
 
-    this.telegram.showPopup({
-      title: 'Подтверждение',
-      message: 'Вы уверены что хотите взять этот заказ?',
-      buttons: [
-        {
-          id: '64',
-          type: 'ok',
-        },
-        {
-          id: '0',
-          type: 'cancel',
-        },
-      ],
-    }, async (btnId: string) => {
-      if (btnId === '64') {
-        const result = await this.api.takeOrder(id);
-        if (result) {
-          this.telegram.showPopup({
-            title: 'Успех!',
-            message: 'Заказ успешно взят.',
-          });
+    this.telegram.showPopup(
+      {
+        title: 'Подтверждение',
+        message: 'Вы уверены что хотите взять этот заказ?',
+        buttons: [
+          {
+            id: '64',
+            type: 'ok',
+          },
+          {
+            id: '0',
+            type: 'cancel',
+          },
+        ],
+      },
+      async (btnId: string) => {
+        if (btnId === '64') {
+          const result = await this.api.takeOrders(timestamp);
+          if (result) {
+            this.telegram.showPopup({
+              title: 'Успех!',
+              message: 'Заказ успешно взят.',
+            });
+          }
+          await this.updateOrders();
         }
-        await this.updateOrders();
-      }
-    });
+      },
+    );
 
-    this.orderDecisionChoosing = false;
+    this.timestampDecisionChoosing = false;
   }
 
-  async closeOrder(id: number): Promise<void> {
-    if (this.orderDecisionChoosing) {
+  async closeOrders(timestamp: number): Promise<void> {
+    if (this.timestampDecisionChoosing) {
       return;
     }
-    this.orderDecisionChoosing = true;
+    this.timestampDecisionChoosing = true;
 
-    this.telegram.showPopup({
-      title: 'Подтверждение',
-      message: 'Вы уверены что хотите закрыть этот заказ? Если да, то выберите один из исходов закрытия: "Завершение" или "Отказ от заказа"',
-      buttons: [
-        {
-          id: '64',
-          text: 'Завершение',
-        },
-        {
-          id: '63',
-          text: 'Отказ от заказа',
-        },
-        {
-          id: '0',
-          type: 'cancel',
-        },
-      ],
-    }, async (btnId: string) => {
-      if (btnId === '64' || btnId === '63') {
-        const result = await this.api.closeOrder(id, btnId === '64');
-        if (result) {
-          this.telegram.showPopup({
-            title: 'Успех!',
-            message: btnId === '64' ? 'Заказ успешно завершен.' : 'Вы отказались от заказа.',
-          });
+    this.telegram.showPopup(
+      {
+        title: 'Подтверждение',
+        message:
+          'Вы уверены что хотите закрыть этот заказ? Если да, то выберите один из исходов закрытия: "Завершение" или "Отказ от заказа"',
+        buttons: [
+          {
+            id: '64',
+            text: 'Завершение',
+          },
+          {
+            id: '63',
+            text: 'Отказ от заказа',
+          },
+          {
+            id: '0',
+            type: 'cancel',
+          },
+        ],
+      },
+      async (btnId: string) => {
+        if (btnId === '64' || btnId === '63') {
+          const result = await this.api.closeOrders(timestamp, btnId === '64');
+          if (result) {
+            this.telegram.showPopup({
+              title: 'Успех!',
+              message:
+                btnId === '64'
+                  ? 'Заказ успешно завершен.'
+                  : 'Вы отказались от заказа.',
+            });
+          }
+          await this.updateOrders();
         }
-        await this.updateOrders();
-      }
-    });
+      },
+    );
 
-    this.orderDecisionChoosing = false;
+    this.timestampDecisionChoosing = false;
   }
 
-  async cancelOrder(id: number): Promise<void> {
-    if (this.orderDecisionChoosing) {
+  async cancelOrders(timestamp: number): Promise<void> {
+    if (this.timestampDecisionChoosing) {
       return;
     }
-    this.orderDecisionChoosing = true;
+    this.timestampDecisionChoosing = true;
 
-    this.telegram.showPopup({
-      title: 'Подтверждение',
-      message: 'Вы уверены что хотите отменить этот заказ?',
-      buttons: [
-        {
-          id: '64',
-          type: 'ok',
-        },
-        {
-          id: '0',
-          type: 'cancel',
-        },
-      ],
-    }, async (btnId: string) => {
-      if (btnId === '64') {
-        const result = await this.api.cancelOrder(id);
-        if (result) {
-          this.telegram.showPopup({
-            title: 'Успех!',
-            message: 'Заказ успешно отменен.',
-          });
+    this.telegram.showPopup(
+      {
+        title: 'Подтверждение',
+        message: 'Вы уверены что хотите отменить этот заказ?',
+        buttons: [
+          {
+            id: '64',
+            type: 'ok',
+          },
+          {
+            id: '0',
+            type: 'cancel',
+          },
+        ],
+      },
+      async (btnId: string) => {
+        if (btnId === '64') {
+          const result = await this.api.cancelOrders(timestamp);
+          if (result) {
+            this.telegram.showPopup({
+              title: 'Успех!',
+              message: 'Заказ успешно отменен.',
+            });
+          }
+          await this.updateOrders();
         }
-        await this.updateOrders();
-      }
-    });
+      },
+    );
 
-    this.orderDecisionChoosing = false;
+    this.timestampDecisionChoosing = false;
   }
 
   timeDifference(createDate: number | Date): string {
     let result: string = '';
 
     createDate = new Date(createDate);
-    const diffMs = (createDate.getTime() - this.currentDate.getTime()); // milliseconds between now & Christmas
-    const diffDays = (Math.floor(diffMs / 86400000) * -1) - 1; // days
-    const diffHrs = (Math.floor((diffMs % 86400000) / 3600000) * -1) - 1; // hours
-    const diffMins = (Math.round(((diffMs % 86400000) % 3600000) / 60000) * -1); // minutes
+    const diffMs = createDate.getTime() - this.currentDate.getTime(); // milliseconds between now & Christmas
+    const diffDays = Math.floor(diffMs / 86400000) * -1 - 1; // days
+    const diffHrs = Math.floor((diffMs % 86400000) / 3600000) * -1 - 1; // hours
+    const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000) * -1; // minutes
 
     if (diffDays > 0) {
       result += `${diffDays} дней, `;
@@ -200,23 +224,36 @@ export class OrdersListComponent {
       }, 500);
     }
 
-    this.orders = undefined;
-    this.orders = (await this.api.getAllOrders()).filter((order: IOrder) => order.deletedAt === null && !order.isClosed);
-    this.orders = this.orders.map((color) => {
-      color.color = AppComponent.colorsInfo.filter((_color: ColorInfo) => _color.code === color.colorCode)[0].color;
-      return color;
+    this.timestamps = undefined;
+
+    const newTimestamps: IApiOrdersByTimestamp[] = (
+      await this.api.getAllOrders()
+    ).filter(
+      (timestamp: IApiOrdersByTimestamp) =>
+        timestamp.orders[0].deletedAt === null && !timestamp.orders[0].isClosed,
+    );
+
+    newTimestamps.forEach((timestamp, firstIndex) => {
+      timestamp.orders.forEach((order, deepIndex) => {
+        newTimestamps[firstIndex].orders[deepIndex].color =
+          AppComponent.colorsInfo.filter(
+            (_color: ColorInfo) =>
+              _color.code === timestamp.orders[deepIndex].colorCode,
+          )[0].color;
+      });
     });
-    console.log(this.orders);
-    
-    for (let i = 0; i < this.orders.length; i++) {
-      this.orders[i].type = OrderType.Other;
-      if (this.orders[i].takenBy?.id === this.user?.id) {
-        this.orders[i].type = OrderType.Current;
+    console.log(newTimestamps);
+
+    for (let i = 0; i < newTimestamps.length; i++) {
+      newTimestamps[i].type = OrderType.Other;
+      if (newTimestamps[i].orders[0].takenBy?.id === this.user?.id) {
+        newTimestamps[i].type = OrderType.Current;
       }
-      if (this.orders[i].creator?.id === this.user?.id) {
-        this.orders[i].type = OrderType.Created;
+      if (newTimestamps[i].orders[0].creator?.id === this.user?.id) {
+        newTimestamps[i].type = OrderType.Created;
       }
     }
+    this.timestamps = newTimestamps;
 
     this.updatingOrders = false;
   }

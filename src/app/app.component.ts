@@ -8,7 +8,7 @@ import { COOKIE_TOKEN } from './static/consts/token.const';
 import { CookieService } from 'ngx-cookie-service';
 import { UserRole } from './static/enums/user.enums';
 import { ColorInfo } from './static/interfaces/colors-info.interface';
-import { IApiToyResponse } from './static/interfaces/toy.interfaces';
+import { IApiToyResponse, IToy } from './static/interfaces/toy.interfaces';
 
 @Component({
   selector: 'app-root',
@@ -33,6 +33,20 @@ export class AppComponent implements OnInit {
   private _allToys: IApiToyResponse[] = [];
   public static get allToys(): IApiToyResponse[] {
     return AppComponent.Instance._allToys;
+  }
+
+  public static findToyById(id: number): IToy | undefined {
+    let toy: IToy | undefined = undefined;
+    this.allToys.every((_toy) => {
+      if (id === _toy.id) {
+        toy = _toy;
+        return false;
+      }
+
+      return true;
+    });
+
+    return toy;
   }
 
   protected static instance: AppComponent;

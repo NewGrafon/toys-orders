@@ -4,13 +4,13 @@ import { OrderType } from '../enums/order.enum';
 export interface IOrder {
   id: number;
   // fullText: string;
+  cartTimestamp: number;
   partName: string;
   code: string;
   color: string;
   colorCode: string;
   amount: number;
   desktop: string;
-  type: OrderType;
   takenBy: IAppUser;
   creator: IAppUser;
   isClosed: boolean;
@@ -31,4 +31,5 @@ export interface IApiCreateOrder {
 export interface IApiOrdersByTimestamp {
   cartTimestamp: number;
   orders: IOrder[];
+  type: OrderType;
 }
