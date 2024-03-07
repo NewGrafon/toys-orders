@@ -17,7 +17,7 @@
     padding: calc(var(--main-padding) / 4);
   }
 
-  .create-toy-form {
+  .create-toy-form, .toys-container {
     margin: auto;
     padding: var(--main-padding);
     border: 1px solid transparent;
@@ -28,6 +28,37 @@
     flex-wrap: wrap;
     justify-content: center;
     align-content: center;
+  }
+
+  .create-toy-button {
+    width: calc(100% - 16px);
+    margin: 8px;
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .toys-container {
+    .item {
+      min-width: 80%;
+      padding: 12px;
+      margin-bottom: 8px;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+
+      p {
+        text-align: center;
+        width: 100%;
+      }
+
+      button {
+        margin-top: 12px;
+        padding: 4px;
+        padding-right: 8px;
+        padding-left: 8px;
+      }
+    }
   }
 
   label {

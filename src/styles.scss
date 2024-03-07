@@ -46,6 +46,15 @@ button {
   cursor: pointer;
 }
 
+button.red {
+  background: red;
+}
+
+.default-border {
+  border: 1px solid var(--tg-theme-button-color);
+  border-radius: 12px;
+}
+
 .hint {
   color: var(--tg-theme-hint-color);
   font-size: .8rem;

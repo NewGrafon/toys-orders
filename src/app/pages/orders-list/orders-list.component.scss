@@ -143,6 +143,10 @@
               margin: 2px;
             }
 
+            hr {
+              width: 100%;
+            }
+
           }
 
         }
@@ -151,10 +155,6 @@
           padding: calc(var(--main-padding) / 1.5);
           margin: 8px;
           font-size: 18px;
-        }
-
-        button.red {
-          background: red;
         }
 
         .created-difference {
