@@ -55,6 +55,7 @@ export class ApiService {
                 ],
               });
               await this.router.navigateByUrl('/');
+              window.location.reload();
             }
           }
         },
@@ -171,7 +172,6 @@ export class ApiService {
     return result;
   }
 
-  // need test
   public async changeAmountInCart(cartToy: ICartToy): Promise<IAppUser> {
     let result: IAppUser;
 
@@ -189,7 +189,6 @@ export class ApiService {
     return result;
   }
 
-  // need test
   public async removeFromCart(cartToy: ICartToy): Promise<IAppUser> {
     let result: IAppUser;
 
@@ -207,7 +206,6 @@ export class ApiService {
     return result;
   }
 
-  // need test
   public async getToyById(
     id: number | string,
   ): Promise<IApiToyResponse | undefined> {
@@ -256,6 +254,7 @@ export class ApiService {
   // }
 
   // need test
+
   public async confirmCart(cart: IApiCart): Promise<IOrder[]> {
     let result: IOrder[];
 
@@ -273,8 +272,7 @@ export class ApiService {
     return result;
   }
 
-  // need test
-  public async takeOrders(cartTimestamp: number): Promise<boolean> {
+  public async takeOrders(cartTimestamp: string): Promise<boolean> {
     let result: boolean;
 
     try {
@@ -287,9 +285,8 @@ export class ApiService {
     return result;
   }
 
-  // need test
   public async closeOrders(
-    cartTimestamp: number,
+    cartTimestamp: string,
     isFinishedNotCancel: boolean,
   ): Promise<boolean> {
     let result: boolean;
@@ -306,8 +303,7 @@ export class ApiService {
     return result;
   }
 
-  // need test
-  public async cancelOrders(cartTimestamp: number): Promise<boolean> {
+  public async cancelOrders(cartTimestamp: string): Promise<boolean> {
     let result: boolean;
 
     try {
@@ -344,6 +340,19 @@ export class ApiService {
           json: toy,
         })
         .json();
+    } catch (e) {
+      console.error(e);
+      result = undefined;
+    }
+
+    return result;
+  }
+
+  public async deleteToy(toyId: number): Promise<boolean | undefined> {
+    let result: boolean | undefined;
+
+    try {
+      result = await this.api.delete(`toys/${toyId}`).json();
     } catch (e) {
       console.error(e);
       result = undefined;

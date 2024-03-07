@@ -13,6 +13,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ColorInfo } from '../../static/interfaces/colors-info.interface';
 
 @Component({
   selector: 'app-cart',
@@ -33,26 +34,58 @@ export class CartComponent {
     };
   }
 
+  getColorByColorCode(colorCode: string): string {
+    let color: ColorInfo;
+    AppComponent.colorsInfo.every((item) => {
+      if (item.code === colorCode.toString()) {
+        color = item;
+        return false;
+      }
+      return true;
+    });
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    if (!color) {
+      throw new Error('Color not found by color code!');
+    }
+    return `"${color.color}" (Код ${color.code})`;
+  }
+
+  changingOrRemovingFromCart: boolean = false;
+
   async changeAmountItem(
     id: number,
     colorCode: string,
     amount: number,
   ): Promise<void> {
+    if (this.changingOrRemovingFromCart) {
+      return;
+    }
+
+    this.changingOrRemovingFromCart = true;
     await this.api.changeAmountInCart({
       id,
       colorCode,
       amount,
     });
     await AppComponent.updateUser();
+    this.changingOrRemovingFromCart = false;
   }
 
   async removeFromCart(id: number, colorCode: string): Promise<void> {
+    if (this.changingOrRemovingFromCart) {
+      return;
+    }
+
+    this.changingOrRemovingFromCart = true;
     await this.api.removeFromCart({
       id,
       colorCode,
       amount: 0,
     });
     await AppComponent.updateUser();
+    this.changingOrRemovingFromCart = false;
   }
 
   cartForm = new FormGroup({

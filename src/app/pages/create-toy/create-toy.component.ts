@@ -10,7 +10,11 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { TelegramService } from '../../services/telegram/telegram.service';
 import { ApiService } from '../../services/api/api.service';
-import { IApiCreateToy } from '../../static/interfaces/toy.interfaces';
+import {
+  IApiCreateToy,
+  IApiToyResponse,
+} from '../../static/interfaces/toy.interfaces';
+import { AppComponent } from '../../app.component';
 
 @Component({
   selector: 'app-create-toy',
@@ -21,6 +25,43 @@ import { IApiCreateToy } from '../../static/interfaces/toy.interfaces';
 })
 export class CreateToyComponent {
   private static instance: CreateToyComponent;
+
+  createToyPageEnabled: boolean = false;
+
+  get allToys(): IApiToyResponse[] {
+    return AppComponent.allToys;
+  }
+
+  async deleteToy(toyId: number) {
+    this.telegram.showPopup(
+      {
+        title: 'Подтверждение',
+        message: `Вы уверены что хотите удалить эту деталь?\nВсе позиции в заказах, содержащие эту деталь, будут удалены.`,
+        buttons: [
+          {
+            id: '64',
+            text: 'Подтвердить',
+          },
+          {
+            id: '0',
+            type: 'cancel',
+          },
+        ],
+      },
+      async (btnId: string) => {
+        if (btnId === '64') {
+          const result = await this.api.deleteToy(toyId);
+          if (result) {
+            this.telegram.showPopup({
+              title: 'Успех!',
+              message: 'Деталь успешно отменена!',
+            });
+          }
+          window.location.reload();
+        }
+      },
+    );
+  }
 
   createToyForm = new FormGroup({
     partName: new FormControl('', [

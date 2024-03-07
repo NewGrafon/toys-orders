@@ -1,26 +1,46 @@
 <div class="create-toy">
-  <h2>Создание заказа</h2>
-  <hr>
-  <a routerLink="/list"><- Назад</a>
-  <form [formGroup]="createToyForm">
-    <div class="create-toy-form">
-
-      <label for="partName">
-        Название детали
-      </label>
-      <input id="partName"
-             [class]="partNameValid ? null : 'invalid'"
-             type="text" formControlName="partName"/>
-
-      <div class="wrapper-row form-wrap"></div>
-
-      <label for="code">
-        Код детали
-      </label>
-      <input id="code"
-             [class]="codeValid ? null : 'invalid'"
-             type="text" formControlName="code"/>
-
+  @if (createToyPageEnabled) {
+    <h2>Создание заказа</h2>
+    <hr>
+    <a (click)="createToyPageEnabled = false;"><- Назад</a>
+    <form [formGroup]="createToyForm">
+      <div class="create-toy-form">
+  
+        <label for="partName">
+          Название детали
+        </label>
+        <input id="partName"
+               [class]="partNameValid ? null : 'invalid'"
+               type="text" formControlName="partName"/>
+  
+        <div class="wrapper-row form-wrap"></div>
+  
+        <label for="code">
+          Код детали
+        </label>
+        <input id="code"
+               [class]="codeValid ? null : 'invalid'"
+               type="text" formControlName="code"/>
+  
+      </div>
+    </form>
+  } @else {
+    <h2>Каталог деталей</h2>
+    <hr>
+    <button class="create-toy-button" (click)="createToyPageEnabled = true;">
+      Создать новую деталь
+    </button>
+    <hr>
+    <div class="toys-container">
+      @for (toy of allToys; track toy; let index = $index) {
+        <div class="item default-border">
+          <p>Деталь "{{ toy.partName }}"</p>
+          <p>Код {{ toy.code }}</p>
+          <button class="red" (click)="deleteToy(toy.id);">
+            Удалить?
+          </button>
+        </div>
+      }
     </div>
-  </form>
+  }
 </div>
