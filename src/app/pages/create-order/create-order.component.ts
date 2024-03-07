@@ -84,6 +84,7 @@ export class CreateOrderComponent {
 
     if (partNameStrings.includes(inputValue)) {
       valid = true;
+      this.setPartNameAndCode(inputValue, undefined);
       this.partNameSimilarityList = [];
     } else if (inputValue.length > 0) {
       valid = false;
@@ -135,6 +136,7 @@ export class CreateOrderComponent {
 
     if (codeStrings.includes(inputValue)) {
       valid = true;
+      this.setPartNameAndCode(undefined, inputValue);
       this.codeSimilarityList = [];
     } else if (inputValue.length > 0) {
       valid = false;
@@ -339,13 +341,6 @@ export class CreateOrderComponent {
   }
 
   formCheck(): void {
-    console.log(
-      this.createOrderForm.controls.partName.valid,
-      this.createOrderForm.controls.code.valid,
-      this.createOrderForm.controls.color.valid,
-      this.createOrderForm.controls.amount.valid,
-    );
-
     if (
       this.createOrderForm.controls.partName.valid &&
       this.createOrderForm.controls.code.valid &&

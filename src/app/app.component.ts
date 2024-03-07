@@ -95,6 +95,7 @@ export class AppComponent implements OnInit {
         logged: false,
         role: undefined,
       };
+      await AppComponent.Instance.router.navigateByUrl('/');
     }
 
     AppComponent.Instance._appUser = user;

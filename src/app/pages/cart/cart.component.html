@@ -9,25 +9,32 @@
             <img src="/assets/img/loading.gif" alt="Загрузка..." height="128" width="128" />
         </div>
         } @else {
-            @for (item of userCart.cart; track item) {
-                <div class="item">
-                    <p class="item-field">Деталь "{{ appComponent.findToyById(item.id)?.partName }}"</p>
-                    <p class="item-field">Код {{ appComponent.findToyById(item.id)?.code }}</p>
-                    <p class="item-field">Цвет "{{ item.colorCode }}"</p>
-                    <div class="amount-div">
-                        <p>Действия:</p>
-                        <div class="buttons">
-                            <button (click)="removeFromCart(item.id, item.colorCode);">Удалить</button>
-                            <p> | </p>
-                            <button (click)="changeAmountItem(item.id, item.colorCode, -1);">-</button>
-                            <p> {{ item.amount }} </p>
-                            <button (click)="changeAmountItem(item.id, item.colorCode, 1);">+</button>
+            @if (userCart.cart.length === 0) {
+                <h3>Корзина пуста...</h3>
+                <br>
+                <br>
+            } @else {
+                @for (item of userCart.cart; track item) {
+                    <div class="item default-border">
+                        <p class="item-field">Деталь "{{ appComponent.findToyById(item.id)?.partName }}"</p>
+                        <p class="item-field">Код {{ appComponent.findToyById(item.id)?.code }}</p>
+                        <p class="item-field">Цвет {{ getColorByColorCode(item.colorCode) }}</p>
+                        <div class="amount-div">
+                            <p>Действия:</p>
+                            <div class="buttons">
+                                <button [disabled]="changingOrRemovingFromCart" class="remove" (click)="removeFromCart(item.id, item.colorCode);">Удалить</button>
+                                <p> | </p>
+                                <button [disabled]="changingOrRemovingFromCart" (click)="changeAmountItem(item.id, item.colorCode, -1);">-</button>
+                                <p class="amount-value"> {{ item.amount }} </p>
+                                <button [disabled]="changingOrRemovingFromCart" (click)="changeAmountItem(item.id, item.colorCode, 1);">+</button>
+                            </div>
                         </div>
+    
                     </div>
-
-                </div>
-                <div class="wrapper-row form-wrap"></div>
+                    <div class="wrapper-row form-wrap"></div>
+                }
             }
+            <hr>
             <label for="desktop">
                 Стол доставки
             </label>

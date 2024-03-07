@@ -63,7 +63,7 @@ export class OrdersListComponent {
 
   timestampDecisionChoosing: boolean = false;
 
-  async takeOrders(timestamp: number): Promise<void> {
+  async takeOrders(timestamp: string): Promise<void> {
     if (this.timestampDecisionChoosing) {
       return;
     }
@@ -101,7 +101,7 @@ export class OrdersListComponent {
     this.timestampDecisionChoosing = false;
   }
 
-  async closeOrders(timestamp: number): Promise<void> {
+  async closeOrders(timestamp: string): Promise<void> {
     if (this.timestampDecisionChoosing) {
       return;
     }
@@ -147,7 +147,7 @@ export class OrdersListComponent {
     this.timestampDecisionChoosing = false;
   }
 
-  async cancelOrders(timestamp: number): Promise<void> {
+  async cancelOrders(timestamp: string): Promise<void> {
     if (this.timestampDecisionChoosing) {
       return;
     }
@@ -185,10 +185,10 @@ export class OrdersListComponent {
     this.timestampDecisionChoosing = false;
   }
 
-  timeDifference(createDate: number | Date): string {
+  timeDifference(createDate: string | Date): string {
     let result: string = '';
 
-    createDate = new Date(createDate);
+    createDate = new Date(Number.parseInt(createDate.toString()));
     const diffMs = createDate.getTime() - this.currentDate.getTime(); // milliseconds between now & Christmas
     const diffDays = Math.floor(diffMs / 86400000) * -1 - 1; // days
     const diffHrs = Math.floor((diffMs % 86400000) / 3600000) * -1 - 1; // hours

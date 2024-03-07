@@ -30,9 +30,9 @@
                 <div class="order-properties">
                   <div>
                     @for (item of timestamp.orders; track item; let index = $index) {
-                      <p>Позиция {{ index+1 }}:</p>
-                      <p>Название детали: {{ item.partName }}</p>
-                      <p>Код: {{ item.code }}</p>
+                      <p><b>Позиция {{ index+1 }}:</b></p>
+                      <p>Название детали: {{ item.toy.partName }}</p>
+                      <p>Код: {{ item.toy.code }}</p>
                       <p>Цвет: {{ item.color }}</p>
                       <p>Код цвета: {{ item.colorCode }}</p>
                       <p>Количество: {{ item.amount }}</p>
@@ -42,7 +42,7 @@
                     <!-- <p>{{ order.fullText }}</p> -->
                   </div>
                 </div>
-                <button (click)="closeOrders(timestamp.cartTimestamp)">Завершить заказ</button>
+                <button (click)="closeOrders(timestamp.orders[0].cartTimestamp)">Завершить заказ</button>
                 <p [ngClass]="['hint', 'created-difference']">Создан: {{ timeDifference(timestamp.cartTimestamp) }}</p>
               </div>
             }
@@ -74,8 +74,8 @@
                   <div>
                     @for (item of timestamp.orders; track item; let index = $index) {
                       <p>Позиция {{ index+1 }}:</p>
-                      <p>Название детали: {{ item.partName }}</p>
-                      <p>Код: {{ item.code }}</p>
+                      <p>Название детали: {{ item.toy.partName }}</p>
+                      <p>Код: {{ item.toy.code }}</p>
                       <p>Цвет: {{ item.color }}</p>
                       <p>Код цвета: {{ item.colorCode }}</p>
                       <p>Количество: {{ item.amount }}</p>
@@ -83,9 +83,13 @@
                     }
                     <p>Стол доставки: {{ timestamp.orders[0].desktop }}</p>
                     <!-- <p>{{ order.fullText }}</p> -->
+                    @if (timestamp.orders[0].takenBy?.id) {
+                      <hr>
+                      <p><b>ВНИМАНИЕ! <br>Заказ взят доставщиком.</b></p>
+                    }
                   </div>
                 </div>
-                <button class="red" (click)="cancelOrders(timestamp.cartTimestamp)">Отменить заказ</button>
+                <button class="red" (click)="cancelOrders(timestamp.orders[0].cartTimestamp)">Отменить заказ</button>
                 <p [ngClass]="['hint', 'created-difference']">Создан: {{ timeDifference(timestamp.cartTimestamp) }}</p>
               </div>
             }
@@ -110,9 +114,9 @@
         } @else {
           @for (timestamp of OtherTimestamps; track timestamp) {
             <div class="content-item">
-              <p>Заявка №{{ timestamp.orders[0].cartTimestamp }}</p>
+              <p>Заявка №{{ timestamp.cartTimestamp }}</p>
               @if (user.role === UserRole.Deliver) {
-                <button (click)="takeOrders(timestamp.cartTimestamp)">Взять заказ</button>
+                <button (click)="takeOrders(timestamp.orders[0].cartTimestamp)">Взять заказ</button>
               }
               <p [ngClass]="['hint', 'created-difference']">Создан: {{ timeDifference(timestamp.cartTimestamp) }}</p>
             </div>

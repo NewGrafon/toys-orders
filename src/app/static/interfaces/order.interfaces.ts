@@ -1,13 +1,13 @@
 import { IAppUser } from '../types/app-user.type';
 import { OrderType } from '../enums/order.enum';
+import { IApiToyResponse } from './toy.interfaces';
 
 export interface IOrder {
   id: number;
   // fullText: string;
-  cartTimestamp: number;
-  partName: string;
-  code: string;
-  color: string;
+  cartTimestamp: string;
+  toy: IApiToyResponse;
+  color?: string;
   colorCode: string;
   amount: number;
   desktop: string;
@@ -29,7 +29,7 @@ export interface IApiCreateOrder {
 }
 
 export interface IApiOrdersByTimestamp {
-  cartTimestamp: number;
+  cartTimestamp: string;
   orders: IOrder[];
   type: OrderType;
 }
