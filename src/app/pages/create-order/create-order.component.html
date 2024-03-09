@@ -1,97 +1,61 @@
 <div class="create-order">
   <h2>Создание заказа</h2>
   <hr>
-  <a routerLink="/cart"><- Назад</a>
+  
   <form [formGroup]="createOrderForm">
     <div class="create-order-form">
-
-      <label for="partName">
-        Название детали
-      </label>
-      <input id="partName"
-             [class]="partNameValid ? null : 'invalid'"
-             type="text" formControlName="partName"/>
-
-      <div class="wrapper-row form-wrap"></div>
-
-      <label for="">
-        И
-      </label>
-
-      <div class="wrapper-row form-wrap"></div>
-
-      <label for="code">
-        Код детали
-      </label>
-      <input id="code"
-             [class]="codeValid ? null : 'invalid'"
-             type="text" formControlName="code"/>
-
-      <div class="wrapper-row form-wrap"></div>
-
-      @if (PartNameSimilarityList.length > 0) {
-        <label for="">
-          Подсказки по названию детали
-        </label>
-
-        <div class="find-color">
-          @for (obj of PartNameSimilarityList; track obj) {
-            <div class="item" (click)="setPartNameAndCode(obj.str, undefined);">
-              Название {{ obj?.str }}
+      @if (stageOne) {
+        <a routerLink="/cart"><- Назад</a>
+        <div class="items-container">
+          <h3>Выбор детали</h3>
+          <br>
+          <br>
+          @for (toy of allToys; track toy; let index = $index) {
+            <div class="item default-border"
+                (click)="this.createOrderForm.controls.toyInput.setValue(toy.partName + ' - ' + toy.code);"
+            >
+              <p>"{{ toy.partName }}"</p>
+              <hr>
+              <p>Код {{ toy.code }}</p>
             </div>
           }
         </div>
-
-        <div class="wrapper-row form-wrap"></div>
-      }
-      
-
-      @if (CodeSimilarityList.length > 0) {
-        <label for="">
-          Подсказки по коду детали
-        </label>
-
-        <div class="find-color">
-          @for (obj of CodeSimilarityList; track obj) {
-            <div class="item" (click)="setPartNameAndCode(undefined, obj.str);">
-              Код {{ obj?.str }}
+      } @else if (stageTwo) {
+        <a (click)="this.createOrderForm.controls.toyInput.setValue('');"><- Назад</a>
+        <h3>Выбор цвета</h3>
+        <br>
+        <br>
+        <div class="items-container">
+          @for (color of colorsInfo; track color; let index = $index) {
+            <div class="item default-border" 
+                (click)="this.createOrderForm.controls.color.setValue(color.color + ' - ' + color.code);"
+            >
+              <p>"{{ color.color }}"</p>
+              <hr>
+              <p>Код цвета {{ color.code }}</p>
             </div>
           }
         </div>
+      } @else {
+        <a (click)="this.createOrderForm.controls.color.setValue('');"><- Назад</a>
 
-        <div class="wrapper-row form-wrap"></div>
-      }
+        <label for="amount">
+          Количество
+        </label>
+        <input id="amount"
+               [class]="amountValid ? null : 'invalid'"
+               type="number" min="1" formControlName="amount"/>
+      }      
 
-      <label for="color">
-        Цвет | Код цвета
-      </label>
-      <input id="color" 
+      <!--  -->
+
+      <input id="toyInput" hidden
+             [class]="toyInputValid ? null : 'invalid'"
+             type="text" formControlName="toyInput"/>
+
+      <input id="color" hidden
              [class]="colorValid ? null : 'invalid'"
              type="text" formControlName="color"/>
-
-      @if (ColorSimilarityList.length > 0) {
-      <div class="wrapper-row form-wrap"></div>
-
-      <div class="find-color">
-        
-          @for (obj of ColorSimilarityList; track obj) {
-            <div class="item" (click)="this.createOrderForm.controls.color.setValue(ColorStrings[obj.code - 1]);">
-              {{ ColorStrings[obj.code - 1] }}
-            </div>
-          }
-      </div>
-      }
-
-      <div class="wrapper-row form-wrap"></div>
-
-
-      <label for="amount">
-        Количество
-      </label>
-      <input id="amount"
-             [class]="amountValid ? null : 'invalid'"
-             type="number" min="1" formControlName="amount"/>
-
     </div>
   </form>
 </div>

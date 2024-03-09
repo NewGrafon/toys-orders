@@ -15,11 +15,13 @@
 
   a {
     padding: calc(var(--main-padding) / 4);
+    width: 100%;
   }
 
   .create-order-form {
     margin: auto;
     padding: var(--main-padding);
+    padding-top: 0;
     border: 1px solid transparent;
     border-radius: 12px;
     width: calc(100%);
@@ -28,6 +30,25 @@
     flex-wrap: wrap;
     justify-content: center;
     align-content: center;
+
+    .items-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      flex-wrap: wrap;
+      width: 90%;
+
+      .item {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 12px;
+        cursor: pointer;
+      
+        p {
+          text-align: center;
+        }
+      }
+    }
   }
 
   label {
@@ -49,18 +70,18 @@
     height: 12px;
   }
 
-  .find-color {
-    transform: translateY(-11px);
-    background: var(--tg-theme-bg-color);
-    padding: calc(var(--main-padding) / 4);
+  // .find-color {
+  //   transform: translateY(-11px);
+  //   background: var(--tg-theme-bg-color);
+  //   padding: calc(var(--main-padding) / 4);
     
-    .item {
-      padding: calc(var(--main-padding) / 4);
-      margin: calc(var(--main-padding) / 4);
-      background: var(--tg-theme-secondary-bg-color);
-      // text-align: center;
-      cursor: pointer;
-    }
-  }
+  //   .item {
+  //     padding: calc(var(--main-padding) / 4);
+  //     margin: calc(var(--main-padding) / 4);
+  //     background: var(--tg-theme-secondary-bg-color);
+  //     // text-align: center;
+  //     cursor: pointer;
+  //   }
+  // }
 }
 
