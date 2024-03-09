@@ -30,7 +30,7 @@ export class CartComponent {
   get userCart(): ICart {
     return {
       cart: AppComponent.appUser?.cart,
-      desktop: localStorage.getItem(LocalStorageKeys.cartDesktop) || '',
+      desktop: this.cartForm.controls.desktop.value || '',
     };
   }
 
@@ -177,8 +177,5 @@ export class CartComponent {
     private readonly router: Router,
   ) {
     CartComponent.instance = this;
-    this.cartForm.controls.desktop.setValue(
-      localStorage.getItem(LocalStorageKeys.cartDesktop) || '',
-    );
   }
 }
