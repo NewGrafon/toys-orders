@@ -49,9 +49,4 @@ export const routes: Routes = [
     component: OrdersListComponent,
     pathMatch: 'full',
   },
-  // {
-  //   path: 'current',
-  //   component: CurrentOrdersComponent,
-  //   pathMatch: 'full',
-  // },
 ];
