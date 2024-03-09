@@ -10,7 +10,18 @@
           <h3>Выбор детали</h3>
           <br>
           <br>
-          @for (toy of allToys; track toy; let index = $index) {
+          <label for="toy-find">
+            Поиск по названию/коду
+          </label>
+          <input 
+                formControlName="toyFind"
+                [class]="toyFindValid ? null : 'invalid'"
+                id="toy-find" type="text"
+          />
+
+          <div class="wrapper-row form-wrap"></div>
+
+          @for (toy of toyFindSimilarityList.length > 0 ? toyFindSimilarityList : allToys; track toy; let index = $index) {
             <div class="item default-border"
                 (click)="this.createOrderForm.controls.toyInput.setValue(toy.partName + ' - ' + toy.code);"
             >

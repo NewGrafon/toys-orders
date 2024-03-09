@@ -12,8 +12,12 @@ import { ApiService } from '../../services/api/api.service';
 import { ColorInfo } from '../../static/interfaces/colors-info.interface';
 import { AppComponent } from '../../app.component';
 import { CommonModule } from '@angular/common';
-import { IApiToyResponse } from '../../static/interfaces/toy.interfaces';
+import { IApiToyResponse, IToy } from '../../static/interfaces/toy.interfaces';
 import { IApiChangeInCart } from '../../static/interfaces/cart.interfaces';
+import {
+  ISimilarityItem,
+  matchSortStringsToOneString,
+} from '../../static/functions/string-similarity.function';
 
 @Component({
   selector: 'app-create-order',
@@ -34,6 +38,7 @@ export class CreateOrderComponent {
   }
 
   createOrderForm = new FormGroup({
+    toyFind: new FormControl('', []),
     toyInput: new FormControl('', [
       Validators.required,
       Validators.minLength(1),
@@ -52,6 +57,51 @@ export class CreateOrderComponent {
 
   get stageOne(): boolean {
     return !this.createOrderForm.controls.toyInput.valid;
+  }
+
+  toyFindSimilarityList: IToy[] = [];
+  get toyFindValid(): boolean {
+    const inputValue: string =
+      this.createOrderForm.controls.toyFind.value || '';
+
+    if (inputValue.length > 0) {
+      const unq = '{[]}';
+
+      const simList: IToy[] = matchSortStringsToOneString(
+        this.allToys.map((toy) => `${toy.partName}${unq}${toy.code}`),
+        inputValue,
+      ).map((simItem: ISimilarityItem) => {
+        return {
+          partName: simItem.str.split(unq)[0],
+          code: simItem.str.split(unq)[1],
+        };
+      });
+
+      let same: boolean = true;
+      if (simList.length !== this.toyFindSimilarityList.length) {
+        same = false;
+      } else {
+        this.toyFindSimilarityList.every((toy, index) => {
+          if (
+            simList[index].partName !== toy.partName ||
+            simList[index].code !== toy.code
+          ) {
+            same = false;
+            return false;
+          }
+
+          return true;
+        });
+      }
+
+      if (!same) {
+        this.toyFindSimilarityList = simList;
+      }
+    } else {
+      this.toyFindSimilarityList = [];
+    }
+
+    return true;
   }
 
   get stageTwo(): boolean {
@@ -179,28 +229,37 @@ export class CreateOrderComponent {
     const result = await _this.api.changeAmountInCart(body);
 
     if (result) {
-      _this.telegram.showPopup({
-        title: 'Успех!',
-        message: `Заказ успешно добавлен в корзину.`,
-        buttons: [
-          {
-            type: 'ok',
-            text: 'Ок',
-          },
-        ],
-      });
-      _this.telegram.MainButton.hide();
-      await _this.router.navigateByUrl('/cart');
+      _this.telegram.showPopup(
+        {
+          title: 'Успех!',
+          message: `Заказ успешно добавлен в корзину.`,
+          buttons: [
+            {
+              id: '64',
+              // type: 'ok',
+              text: 'Перейти в корзину',
+            },
+            {
+              id: '0',
+              // type: 'ok',
+              text: 'Создать новый заказ',
+            },
+          ],
+        },
+        async (btnId: string): Promise<void> => {
+          _this.telegram.MainButton.hide();
+          if (btnId === '64') {
+            await _this.router.navigateByUrl('/cart');
+          }
+          window.location.reload();
+        },
+      );
     }
 
     _this.telegram.MainButton.offClick(_this.onSubmit);
     _this.telegram.MainButton.hideProgress();
 
     _this.onSubmitting = false;
-
-    if (result) {
-      window.location.reload();
-    }
   }
 
   constructor(
