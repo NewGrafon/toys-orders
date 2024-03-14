@@ -7,6 +7,7 @@ import { CreateUserComponent } from './pages/create-user/create-user.component';
 import { EditUserComponent } from './pages/edit-user/edit-user.component';
 import { CartComponent } from './pages/cart/cart.component';
 import { CreateToyComponent } from './pages/create-toy/create-toy.component';
+import { EditOrderByDeliverComponent } from './pages/edit-order-by-deliver/edit-order-by-deliver.component';
 
 export const routes: Routes = [
   {
@@ -47,6 +48,11 @@ export const routes: Routes = [
   {
     path: 'list',
     component: OrdersListComponent,
+    pathMatch: 'full',
+  },
+  {
+    path: 'edit-order-by-deliver/:timestamp',
+    component: EditOrderByDeliverComponent,
     pathMatch: 'full',
   },
 ];

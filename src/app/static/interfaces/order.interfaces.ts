@@ -33,3 +33,9 @@ export interface IApiOrdersByTimestamp {
   orders: IOrder[];
   type: OrderType;
 }
+
+export interface IEditOrderByDeliver {
+  orderId: number;
+  newAmount?: number;
+  type?: 'all' | 'not-all' | 'none';
+}

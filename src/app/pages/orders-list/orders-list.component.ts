@@ -9,6 +9,8 @@ import { OrderType } from '../../static/enums/order.enum';
 import { FormsModule } from '@angular/forms';
 import { TelegramService } from '../../services/telegram/telegram.service';
 import { ColorInfo } from '../../static/interfaces/colors-info.interface';
+import { timeDifference } from '../../static/functions/time-difference.function';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-orders-list',
@@ -128,18 +130,22 @@ export class OrdersListComponent {
         ],
       },
       async (btnId: string) => {
-        if (btnId === '64' || btnId === '63') {
-          const result = await this.api.closeOrders(timestamp, btnId === '64');
+        if (btnId === '63') {
+          const result = await this.api.closeOrders(timestamp, false, []);
           if (result) {
             this.telegram.showPopup({
               title: 'Успех!',
-              message:
-                btnId === '64'
-                  ? 'Заказ успешно завершен.'
-                  : 'Вы отказались от заказа.',
+              message: 'Вы отказались от заказа.',
             });
           }
           await this.updateOrders();
+        } else if (btnId === '64') {
+          const unixTimestamp = new Date(timestamp).getTime().toString();
+          localStorage.setItem(unixTimestamp, timestamp);
+          await this.router.navigateByUrl(
+            `/edit-order-by-deliver/${unixTimestamp}`,
+          );
+          window.location.reload();
         }
       },
     );
@@ -183,26 +189,6 @@ export class OrdersListComponent {
     );
 
     this.timestampDecisionChoosing = false;
-  }
-
-  timeDifference(createDate: string | Date): string {
-    let result: string = '';
-
-    createDate = new Date(Number.parseInt(createDate.toString()));
-    const diffMs = createDate.getTime() - this.currentDate.getTime(); // milliseconds between now & Christmas
-    const diffDays = Math.floor(diffMs / 86400000) * -1 - 1; // days
-    const diffHrs = Math.floor((diffMs % 86400000) / 3600000) * -1 - 1; // hours
-    const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000) * -1; // minutes
-
-    if (diffDays > 0) {
-      result += `${diffDays} дней, `;
-    }
-    if (diffHrs > 0) {
-      result += `${diffHrs} часов, `;
-    }
-    result += `${diffMins} минут назад`;
-
-    return result;
   }
 
   get refreshIcon(): HTMLElement | null {
@@ -261,6 +247,7 @@ export class OrdersListComponent {
   constructor(
     private readonly api: ApiService,
     private readonly telegram: TelegramService,
+    readonly router: Router,
   ) {
     const interval = setInterval(async () => {
       if (this.user !== undefined) {
@@ -291,4 +278,5 @@ export class OrdersListComponent {
 
   protected readonly UserRole = UserRole;
   protected readonly OrderType = OrderType;
+  protected readonly timeDifference = timeDifference;
 }

@@ -1,0 +1,76 @@
+<div class="orders">
+  <h2>Завершение заказа</h2>
+  <hr>
+  @if (!timestampOrders) {
+    <div class="loader-div">
+      <img src="/assets/img/loading.gif" alt="Загрузка..." height="128" width="128" />
+    </div>
+  } @else {
+    <form [formGroup]="confirmOrdersForm">
+      <div class="orders-list">
+        <div class="title">
+          <!-- <h3>{{ OrderType.Current }}</h3>
+          <img (click)="deliverOpened = !deliverOpened;" [ngClass]="['switcher', deliverOpened ? 'opened' : '']"
+              [height]="32" [width]="20"> -->
+        </div>
+        <div [ngClass]="['content', 'content-opened']">
+          <div class="content-item">
+            <p>Заявка №{{ activatedRoute.snapshot.paramMap.get('timestamp') }}</p>
+            <div class="order-properties">
+              <div>
+                @for (item of timestampOrders; track item; let index = $index) {
+                <p><b>Позиция {{ index+1 }}:</b></p>
+                <p>Название детали: {{ item.toy.partName }}</p>
+                <p>Код: {{ item.toy.code }}</p>
+                <p>Цвет: {{ item.color }}</p>
+                <p>Код цвета: {{ item.colorCode }}</p>
+                <p>Количество: {{ item.amount }}</p>
+                <hr>
+
+                <div class="final-choise">
+                  <label for="choise{{index}}_all">Найдено ровно столько, сколько указано</label>
+                  <input type="radio" name="choise{{index}}" id="choise{{index}}_all" value="all"
+                    (change)="editedOrders[index].type = 'all'; editedOrders[index].newAmount = undefined;" />
+
+                  <div class="wrapper-row"></div>
+
+                  <label for="choise{{index}}_not_all">Найдено другое кол-во деталей {{ editedOrders[index]?.newAmount ? '('+editedOrders[index]?.newAmount+')' : '' }}</label>
+                  <input type="radio" name="choise{{index}}" id="choise{{index}}_not_all" value="not-all"
+                    (change)="editedOrders[index].type = 'not-all'; editedOrders[index].newAmount = undefined;" />
+
+                  <div class="wrapper-row"></div>
+
+                  <label for="choise{{index}}_none">Данную деталь не удалось найти</label>
+                  <input type="radio" name="choise{{index}}" id="choise{{index}}_none" value="none"
+                    (change)="editedOrders[index].type = 'none'; editedOrders[index].newAmount = undefined;" />
+                </div>
+
+                }
+                <hr>
+                <p>Стол доставки: {{ timestampOrders[0].desktop }}</p>
+              </div>
+            </div>
+            <p [ngClass]="['hint', 'created-difference']">Создан: {{ timeDifference(timestampOrders[0].cartTimestamp, currentDate.getTime()) }}</p>
+          </div>
+
+        </div>
+      </div>
+      <hr>
+
+      <input id="lastname" hidden [class]="editedOrdersCompletedValid ? null : 'invalid'" type="text"
+        formControlName="editerOrdersCompleted" />
+    </form>
+  }
+</div>
+
+@for (order of editedOrders; track order; let index = $index) {
+  @if (timestampOrders && order.type === 'not-all' && order.newAmount === undefined) {
+    <div class="change-amount-popup centered">
+      <div class="change-amount centered">
+        <label for="popup{{index}}">Введите количество найденных деталей</label>
+        <input type="number" id="popup{{index}}" value="{{timestampOrders[index].amount}}">
+        <button (click)="setPopupInputValue(index);">Подтвердить</button>
+      </div>
+    </div>
+  }
+}

@@ -43,7 +43,7 @@
                   </div>
                 </div>
                 <button (click)="closeOrders(timestamp.orders[0].cartTimestamp)">Завершить заказ</button>
-                <p [ngClass]="['hint', 'created-difference']">Создан: {{ timeDifference(timestamp.cartTimestamp) }}</p>
+                <p [ngClass]="['hint', 'created-difference']">Создан: {{ timeDifference(timestamp.cartTimestamp, currentDate.getTime()) }}</p>
               </div>
             }
           }
@@ -90,7 +90,7 @@
                   </div>
                 </div>
                 <button class="red" (click)="cancelOrders(timestamp.orders[0].cartTimestamp)">Отменить заказ</button>
-                <p [ngClass]="['hint', 'created-difference']">Создан: {{ timeDifference(timestamp.cartTimestamp) }}</p>
+                <p [ngClass]="['hint', 'created-difference']">Создан: {{ timeDifference(timestamp.cartTimestamp, currentDate.getTime()) }}</p>
               </div>
             }
           }
@@ -118,7 +118,7 @@
               @if (user.role === UserRole.Deliver) {
                 <button (click)="takeOrders(timestamp.orders[0].cartTimestamp)">Взять заказ</button>
               }
-              <p [ngClass]="['hint', 'created-difference']">Создан: {{ timeDifference(timestamp.cartTimestamp) }}</p>
+              <p [ngClass]="['hint', 'created-difference']">Создан: {{ timeDifference(timestamp.cartTimestamp, currentDate.getTime()) }}</p>
             </div>
           }
         }

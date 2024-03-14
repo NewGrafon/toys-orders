@@ -14,6 +14,7 @@ import {
 } from '../../static/interfaces/create-user.interfaces';
 import {
   IApiOrdersByTimestamp,
+  IEditOrderByDeliver,
   IOrder,
 } from '../../static/interfaces/order.interfaces';
 import { Router } from '@angular/router';
@@ -221,7 +222,6 @@ export class ApiService {
     return result;
   }
 
-  // need test
   public async getAllOrders(): Promise<IApiOrdersByTimestamp[]> {
     let result: IApiOrdersByTimestamp[];
 
@@ -235,25 +235,22 @@ export class ApiService {
     return result;
   }
 
-  // // TODO
-  // public async createOrder(body: IApiCreateOrder): Promise<boolean> {
-  //   let result: boolean;
+  public async getOrdersByTimestamp(
+    timestamp: number | string,
+  ): Promise<IOrder[]> {
+    let result: IOrder[];
 
-  //   try {
-  //     result = await this.api
-  //       .post('orders', {
-  //         json: body,
-  //       })
-  //       .json();
-  //   } catch (e) {
-  //     console.error(e);
-  //     result = false;
-  //   }
+    try {
+      result = await this.api
+        .get(`orders/get_by_timestamp/${timestamp}`)
+        .json();
+    } catch (e) {
+      console.error(e);
+      result = [];
+    }
 
-  //   return result;
-  // }
-
-  // need test
+    return result;
+  }
 
   public async confirmCart(cart: IApiCart): Promise<IOrder[]> {
     let result: IOrder[];
@@ -288,12 +285,17 @@ export class ApiService {
   public async closeOrders(
     cartTimestamp: string,
     isFinishedNotCancel: boolean,
+    editedOrders: IEditOrderByDeliver[],
   ): Promise<boolean> {
     let result: boolean;
 
     try {
       result = await this.api
-        .patch(`orders/close/${cartTimestamp}/${isFinishedNotCancel}`)
+        .patch(`orders/close/${cartTimestamp}/${isFinishedNotCancel}`, {
+          json: {
+            editedOrders,
+          },
+        })
         .json();
     } catch (e) {
       console.error(e);
